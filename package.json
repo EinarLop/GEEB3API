@@ -1,0 +1,27 @@
+{
+  "name": "geeb3api",
+  "version": "1.0.0",
+  "description": "development backend server for geeb3",
+  "main": "app.js",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^5.11.9"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.6"
+  },
+  "scripts": {
+    "start": "nodemon ./app.js",
+    "devstart": "SET DEBUG=local-library:* & npm run start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EinarLop/GEEB3API.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EinarLop/GEEB3API/issues"
+  },
+  "homepage": "https://github.com/EinarLop/GEEB3API#readme"
+}
