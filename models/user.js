@@ -5,8 +5,8 @@ var userSchema = new Schema(
     {
         version: Number,       // schema version
         username: {type: String, minlength:4, maxlength:20, trim:true, unique: true, required: true},
-        email: {type: String, trim: true, lowercase:true, unique: true, required: true,
-            validate: [validEmail, 'Invalid email address']},
+        email: {type: String, trim: true, lowercase:true, unique: true, required: true},
+            //match: ['/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/', 'Not a valid email']},
         password: {type: String, required: true},
         tags1: [String],
         tags2: [String],

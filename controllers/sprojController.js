@@ -1,5 +1,12 @@
 const Sproject = require('../models/sproject');
 
+// Mongoose connection
+var mongoose = require('mongoose');
+var uri = 'mongodb+srv://geeb:geeb123@cluster0.dxgwa.mongodb.net/development01?retryWrites=true&w=majority';
+mongoose.connect(uri, {useNewUrlParser:true, useUnifiedTopology: true});
+var db = mongoose.connection;
+db.on('error', console.error.bind(console.error, 'MongoDB Connection Error'));
+
 // Route callback definitions
 
 // GET actions

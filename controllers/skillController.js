@@ -2,6 +2,13 @@ const Skill = require('../models/skill');
 
 // Route handler definitions
 
+// Mongoose connection
+var mongoose = require('mongoose');
+var uri = 'mongodb+srv://geeb:geeb123@cluster0.dxgwa.mongodb.net/development01?retryWrites=true&w=majority';
+mongoose.connect(uri, {useNewUrlParser:true, useUnifiedTopology: true});
+var db = mongoose.connection;
+db.on('error', console.error.bind(console.error, 'MongoDB Connection Error'));
+
 // GET actions
 exports.getList = function(req, res) {
     res.send("Skills list here.");

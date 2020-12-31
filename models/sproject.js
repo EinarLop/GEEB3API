@@ -13,6 +13,8 @@ var sprojectSchema = new Schema(
     }
 )
 
+// arrayLimit de 10 para Tag
+
 sprojectSchema.virtual('url')
     .get(() => {
         return '/catalog/sproject/' + this._id;

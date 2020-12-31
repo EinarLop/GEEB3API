@@ -1,4 +1,4 @@
-const User = require('../models/oproject');
+const User = require('../models/user');
 
 // Route callback definitions
 
@@ -21,12 +21,37 @@ exports.deleteForm = function(req, res) {
 }
 
 // POST actions
-exports.createProject = function(req,res){
-    res.send("Creating a user...")
+exports.createUser = function(req,res){
+    console.log("Creating a user...");
+    //const version = req.body.version 
+    //const username= req.body.username
+    //const email =req.body.email
+    //const password = req.body.password
+    
+    
+    var user = new User(
+        {
+            version:0.1,
+            username:'einar',
+            email:'einar1@einar.com',
+            password:'einar',
+            //tags1:,
+            //tags2:,
+            //tags3:,
+            //fullname:,
+            //university:,
+            //bio:,
+        }
+    )   
+
+    user.save()
+    .then(() => res.json("Oproject added!"))
+    .catch(err => res.status(400).json('Error:' + err));
 }
-exports.updateProject = function(req,res){
+
+exports.updateUser = function(req,res){
     res.send("Updating a user..." + req.params.id);
 }
-exports.deleteProject = function(req,res){
+exports.deleteUser = function(req,res){
     res.send("Deleting a user..." + req.params.id);
 }
