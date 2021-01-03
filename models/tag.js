@@ -1,7 +1,7 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-var tagSchema = new Schema(
+const tagSchema = new Schema(
     {
         version: Number,       // schema version
         name: {type: String, minlength:3, maxlength:30, required:true},

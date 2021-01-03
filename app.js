@@ -1,4 +1,5 @@
 var express = require('express');
+require('dotenv').config()  // to load the values specified in .env
 
 var app = express();
 
@@ -11,12 +12,12 @@ var usersRouter = require('./routes/users');
 
 // Mongoose Setup
 
-var mongoose = require('mongoose');
-var uri = 'mongodb+srv://geeb:geeb123@cluster0.dxgwa.mongodb.net/development01?retryWrites=true&w=majority';
+const mongoose = require('mongoose');
+const uri = process.env.CONNECTIONSTRING;
 mongoose.connect(uri, {useNewUrlParser:true, useUnifiedTopology: true});
-var db = mongoose.connection;
+const db = mongoose.connection;
 db.on('error', console.error.bind(console.error, 'MongoDB Connection Error'));
-
+console.log("Connection to mongoDB succesful");
 
 // Middleware libraries for request handling
 app.use('/', indexRouter);

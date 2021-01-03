@@ -10,7 +10,7 @@ exports.getDetail = function(req, res) {
     res.send("Detail of user: " + req.params.id);
 }
 
-exports.createForm = function(req, res) {
+exports.registerForm = function(req, res) {
     res.send("User creation form here");
 }
 exports.updateForm = function(req, res) {
