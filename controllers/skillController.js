@@ -1,36 +1,35 @@
-const Skill = require('../models/skill');
+const Skill = require("../models/skill");
 
 // Route handler definitions
 
-
 // GET actions
-exports.getList = function(req, res) {
-    res.send("Skills list here.");
-}
-exports.getDetail = function(req, res) {
-    res.send("Skill detail of: " + req.params.id);
-}
+exports.getAll = function (req, res) {
+  res.send("Skills list here.");
+};
 
-exports.createForm = function(req, res) {
-    res.send("Creation form for Skill");
-}
-exports.deleteForm = function(req, res) {
-    res.send("Deletion form for Skill");
-}
-exports.updateForm = function(req, res) {
-    res.send("Update form for Skill");
-}
-
+exports.getOne = function (req, res) {
+  res.send("Get skill with id: " + req.params.id);
+};
 
 // POST actions
-exports.createSkill = function(req, res) {
-    res.send("Create Skill not implemented");
-}
+exports.create = function (req, res) {
+  res.send("Create Skill not implemented");
+};
 
-exports.deleteSkill = function(req, res) {
-    res.send("Delete Skill not implemented");
-}
+exports.delete = function (req, res) {
+  res.send("Delete Skill not implemented");
+};
 
-exports.updateSkill = function(req, res) {
-    res.send("Update Skill not implemented");
-}
+exports.deleteAll = function (req, res) {
+  Skill.deleteMany()
+    .then(function () {
+      console.log("Data deleted"); // Success
+    })
+    .catch(function (error) {
+      console.log(error); // Failure
+    });
+};
+
+exports.update = function (req, res) {
+  res.send("Update Skill not implemented");
+};
