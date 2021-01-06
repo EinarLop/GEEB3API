@@ -34,3 +34,13 @@ exports.delete = function (req, res) {
 exports.update = function (req, res) {
   res.send("Update Tag not implemented");
 };
+
+exports.deleteAll = function (req, res) {
+  Tag.deleteMany({ name: { $ne: "a" } })
+    .then(function () {
+      console.log("Data deleted"); // Success
+    })
+    .catch(function (error) {
+      console.log(error); // Failure
+    });
+};

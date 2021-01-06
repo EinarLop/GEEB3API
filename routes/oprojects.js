@@ -14,7 +14,9 @@ router.get("/", oproject.getAll);
 
 router.put("/update/:id", oproject.update);
 
-router.post("/delete/:id", oproject.delete);
+router.post("delete/:id", oproject.delete);
+
+router.post("/deleteAll", oproject.deleteAll); // DELETE BEFORE DEPLOYING TO PRODUCTION
 
 router.get("/:id", oproject.getOne);
 

@@ -20,6 +20,16 @@ exports.delete = function (req, res) {
   res.send("Delete Skill not implemented");
 };
 
+exports.deleteAll = function (req, res) {
+  Skill.deleteMany()
+    .then(function () {
+      console.log("Data deleted"); // Success
+    })
+    .catch(function (error) {
+      console.log(error); // Failure
+    });
+};
+
 exports.update = function (req, res) {
   res.send("Update Skill not implemented");
 };
