@@ -4,21 +4,15 @@ const router = express.Router();
 const user = require("../controllers/userController");
 
 // ROUTES FOR USER
-router.get("/user/create", user.registerForm);
 
-router.post("/register", user.registerUser);
-router.post("/login", user.loginUser);
+//MVP
+router.post("/register", user.register);
+router.post("/login", user.login);
+router.get("/", user.getAll); // fetch all users data
 
-router.get("/user/:id/update", user.updateForm);
-
-router.post("/user/:id/update", user.updateUser);
-
-router.get("/user/:id/delete", user.deleteForm);
-
-router.post("/user/:id/delete", user.deleteUser);
-
-router.get("/user/:id", user.getDetail);
-
-router.get("/users", user.getList);
+//Extras
+router.post("/update/:id", user.updateUser);
+router.get("/delete/:id", user.deleteForm);
+router.get("/:id", user.getProfile);
 
 module.exports = router;

@@ -1,33 +1,31 @@
-const Sproject = require('../models/sproject');
+const Sproject = require("../models/sproject");
+const Tag = require("../models/tag");
+const Skill = require("../models/skill");
 
+exports.create = function (req, res) {
+  res.send("Creating a project...");
+  /*
+  example = new Sproject({
 
-// Route callback definitions
+  });
+  // use the given Sproject Tags and Skills to either create them or add the reference.
+  example.save()
+  .then((newDoc)) => )
+  .catch((err)=> {});*/
+};
 
-// GET actions
-exports.getList = function(req, res) {
-    res.send("List of all Portfolio projects here");
-}
-exports.getDetail = function(req, res) {
-    res.send("Project detail of Portfolio project: " + req.params.id);
-}
+exports.getAll = function (req, res) {
+  res.send("List of all Portfolio projects here");
+};
 
-exports.createForm = function(req, res) {
-    res.send("Portfolio Project creation form here");
-}
-exports.updateForm = function(req, res) {
-    res.send("Portfolio Project update form here");
-}
-exports.deleteForm = function(req, res) {
-    res.send("Portfolio Project delete form here");
-}
+exports.getOne = function (req, res) {
+  res.send("List of specific project");
+};
 
-// POST actions
-exports.createProject = function(req,res){
-    res.send("Creating a project...")
-}
-exports.updateProject = function(req,res){
-    res.send("Updating a project..." + req.params.id);
-}
-exports.deleteProject = function(req,res){
-    res.send("Deleting a project..." + req.params.id);
-}
+exports.delete = function (req, res) {
+  res.send("Deleting a project..." + req.params.id);
+};
+
+exports.update = function (req, res) {
+  res.send("Updating a project..." + req.params.id);
+};

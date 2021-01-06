@@ -1,27 +1,16 @@
 const Tag = require("../models/tag");
 
-// Route handler definitions
-
 // GET actions
-exports.getList = function (req, res) {
-  res.send("Tag list here.");
-};
-exports.getDetail = function (req, res) {
-  res.send("Tag detail of: " + req.params.id);
+exports.getAll = function (req, res) {
+  // fecth all tags from db
 };
 
-exports.createForm = function (req, res) {
-  res.send("Creation form for Tag");
-};
-exports.deleteForm = function (req, res) {
-  res.send("Deletion form for Tag");
-};
-exports.updateForm = function (req, res) {
-  res.send("Update form for Tag");
+exports.getOne = function (req, res) {
+  res.send("Get tag with id: " + req.params.id);
 };
 
 // POST actions
-exports.createTag = function (req, res) {
+exports.create = function (req, res) {
   const name = req.body.name;
   const oprojects = req.body.oprojects;
   const sprojects = req.body.sprojects;
@@ -38,10 +27,10 @@ exports.createTag = function (req, res) {
     .catch((err) => res.status(400).json("Error: " + err));
 };
 
-exports.deleteTag = function (req, res) {
+exports.delete = function (req, res) {
   res.send("Delete Tag not implemented");
 };
 
-exports.updateTag = function (req, res) {
+exports.update = function (req, res) {
   res.send("Update Tag not implemented");
 };

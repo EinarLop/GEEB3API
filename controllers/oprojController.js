@@ -1,27 +1,13 @@
 const Oproject = require("../models/oproject");
+const Tag = require("../models/tag");
+const Skill = require("../models/skill");
 
 // Route callback definitions
 
 // GET actions
 
-exports.getDetail = function (req, res) {
-  res.send("Project detail of Open project: " + req.params.id);
-};
-
-exports.createForm = function (req, res) {
-  res.send("Open Project creation form here");
-};
-exports.updateForm = function (req, res) {
-  res.send("Open Project update form here");
-};
-exports.deleteForm = function (req, res) {
-  res.send("Open Project delete form here");
-};
-
-// POST actions
-
 // information for the object comes in req.body if we're using json
-exports.createProject = function (req, res) {
+exports.create = function (req, res) {
   // const version = req.body.version;
   const title = req.body.title;
   const description = req.body.description;
@@ -47,15 +33,20 @@ exports.createProject = function (req, res) {
     .catch((err) => res.status(400).json("Error:" + err));
 };
 
-exports.showAll = function (req, res) {
+exports.getAll = function (req, res) {
   Oproject.find()
     .then((oproject) => res.json(oproject))
     .catch((err) => res.status(400).json("Error: " + err));
 };
 
-exports.updateProject = function (req, res) {
+exports.update = function (req, res) {
   res.send("Updating a project..." + req.params.id);
 };
-exports.deleteProject = function (req, res) {
+
+exports.delete = function (req, res) {
   res.send("Deleting a project..." + req.params.id);
+};
+
+exports.getOne = function (req, res) {
+  res.send("Deleting a project...");
 };

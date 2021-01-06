@@ -1,15 +1,18 @@
-var express = require("express");
+const express = require("express");
 require("dotenv").config(); // to load the values specified in .env
 var bodyParser = require("body-parser");
 
-var app = express();
+const app = express();
 app.use(bodyParser.json());
-var port = process.env.PORT || 3000;
+const port = process.env.PORT || 3000;
 
 // Require Router modules
-var indexRouter = require("./routes/index");
-var projectsRouter = require("./routes/projects");
-var usersRouter = require("./routes/users");
+const indexRouter = require("./routes/index");
+const oprojectsRouter = require("./routes/oprojects");
+const sprojectsRouter = require("./routes/sprojects");
+const usersRouter = require("./routes/users");
+const tagsRouter = require("./routes/tags");
+const skillsRouter = require("./routes/skills");
 
 // Mongoose Setup
 
@@ -26,8 +29,11 @@ console.log("Connection to mongoDB succesful");
 
 // Middleware libraries for request handling
 app.use("/", indexRouter);
-app.use("/projects", projectsRouter);
+app.use("/oprojects", oprojectsRouter);
+app.use("/sprojects", sprojectsRouter);
 app.use("/users", usersRouter);
-app.use(express.json());
+app.use("/tags", tagsRouter);
+app.use("/skills", skillsRouter);
 
+app.use(express.json());
 app.listen(port, () => console.log("Express server up and running: " + port));
