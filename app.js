@@ -8,7 +8,7 @@ var port = process.env.PORT || 3000;
 // Require Router modules
 var indexRouter = require('./routes/index');
 var projectsRouter = require('./routes/projects');
-var usersRouter = require('./routes/users');
+var usersRouter = require('./routes/people');
 
 // Mongoose Setup
 
