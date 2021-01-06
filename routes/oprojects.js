@@ -5,17 +5,17 @@ const router = express.Router();
 // Require controller modules (callbacks for each data model)
 const oproject = require("../controllers/oprojController");
 
-// ROUTES FOR OPROJECT
+//ROUTES FOR OPROJECT
+
+//MVP
 router.post("/create", oproject.create);
 
-router.get("/", oproject.showAll);
+router.get("/", oproject.getAll);
 
-router.post("/update/:id", oproject.updateProject);
+router.put("/update/:id", oproject.update);
 
 router.post("/delete/:id", oproject.delete);
 
 router.get("/:id", oproject.getOne);
-
-// ROUTES FOR SPROJECT
 
 module.exports = router;

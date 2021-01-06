@@ -8,8 +8,6 @@ router.get("/", skill.getAll);
 
 router.put("/update/:id", skill.update);
 
-router.post("/update/:id", oproject.update);
+router.post("/delete/:id", skill.delete);
 
-router.post("/delete/:id", oproject.delete);
-
-router.get("/:id", oproject.getOne);
+router.get("/:id", skill.getOne);

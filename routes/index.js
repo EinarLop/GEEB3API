@@ -35,11 +35,7 @@ router.get("/about", function (req, res) {
 // get skill delete form
 // post skill delete
 
-router.get("/tags", tag.getList);
-
 router.get("/tag/:id", tag.getDetail);
-
-router.get("/skills", skill.getList);
 
 router.get("/skill/:id", skill.getDetail);
 
