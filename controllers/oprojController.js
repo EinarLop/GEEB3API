@@ -15,6 +15,7 @@ exports.create = function (req, res) {
   //const userid = req.body.userid
   const status = req.body.status;
   const highlights = req.body.highlights;
+  const desirables = req.body.desirables;
   const tags = req.body.tags;
   const skills = req.body.skills;
 
@@ -27,6 +28,7 @@ exports.create = function (req, res) {
     highlights,
     tags,
     skills,
+    desirables,
   });
   oproject.save().then((newDoc) => {
     // use the given Sproject Tags and Skills to either create them or add the reference.

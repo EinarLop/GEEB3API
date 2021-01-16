@@ -1,8 +1,10 @@
 const express = require("express");
+const cors = require("cors");
 require("dotenv").config(); // to load the values specified in .env
 var bodyParser = require("body-parser");
 
 const app = express();
+app.use(cors());
 app.use(bodyParser.json());
 const port = process.env.PORT || 3000;
 
@@ -14,7 +16,6 @@ const sprojectsRouter = require("./routes/sprojects");
 const usersRouter = require("./routes/users");
 const tagsRouter = require("./routes/tags");
 const skillsRouter = require("./routes/skills");
-
 
 // Mongoose Setup
 

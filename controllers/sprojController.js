@@ -2,6 +2,9 @@ const Sproject = require("../models/sproject");
 const Tag = require("../models/tag");
 const Skill = require("../models/skill");
 
+// Nombres Geeb Projects
+// Cloud provider
+// Agregar a repo
 exports.create = async function (req, res) {
   console.log("Creating a project...");
   const title = req.body.title;
