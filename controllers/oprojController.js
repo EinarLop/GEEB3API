@@ -126,5 +126,7 @@ exports.deleteAll = function (req, res) {
 };
 
 exports.getOne = function (req, res) {
-  res.send("Deleting a project...");
+  Oproject.findById(req.params.id)
+  .then((oproject) => res.json(oproject))
+  .catch((err) => res.status(400).json("Error: " + err));
 };
