@@ -3,8 +3,8 @@ const Schema = mongoose.Schema;
 
 const oprojectSchema = new Schema({
   version: Number, // schema version
-  title: { type: String, required: true },
-  description: { type: String, required: true },
+  title: { type: String, required: true, minlength: 5, maxlength:50},
+  description: { type: String, required: true, minlength:5, maxlength:300 },
   userid: { type: Schema.Types.ObjectId, ref: "User", required: false },
   status: {
     type: String,
@@ -12,17 +12,20 @@ const oprojectSchema = new Schema({
     enum: ["Open", "Closed"],
     default: "Open",
   },
-  highlights: { type: [String], validate: [arrayLimit, "Exceeds limit of 3"] },
-  tags: [String],
-  skills: [String],
-  desirables: { type: [String], validate: [arrayLimit, "Exceeds limit of 3"] },
+  highlights: { type: [String], validate: [arrayLimit, "Exceeds limit"] },
+  tags: { type: [String], validate: [tagLimit, "Exceeds limit"] },    // string names of tags
+  skills: { type: [String], validate: [tagLimit, "Exceeds limit"] },  // string names of skill tags  
+  desirables: { type: [String], validate: [arrayLimit, "Exceeds limit"] },
 });
 
-// arrayLimit de 10 para Tag
 
 function arrayLimit(arr) {
+  return arr.length <= 5;
+}
+
+function tagLimit(arr) {
   return arr.length <= 3;
-} // validation is better to be done in front-end?
+}
 
 oprojectSchema.virtual("url").get(() => {
   return "/projects/oproject/" + this._id;
