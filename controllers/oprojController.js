@@ -2,7 +2,7 @@ const Oproject = require("../models/oproject");
 const Tag = require("../models/tag");
 const Skill = require("../models/skill");
 const async = require("async");
-
+const mongoose = require('mongoose');
 // Route callback definitions
 
 // GET actions
@@ -10,9 +10,10 @@ const async = require("async");
 // information for the object comes in req.body if we're using json
 exports.create = function (req, res) {
   // const version = req.body.version;
+  console.log(req.userId);
   const title = req.body.title;
   const description = req.body.description;
-  //const userid = req.body.userid
+  const userid = mongoose.Types.ObjectId(req.userId.userId);   // fix userId.userId
   const status = req.body.status;
   const highlights = req.body.highlights;
   const desirables = req.body.desirables;
@@ -23,7 +24,7 @@ exports.create = function (req, res) {
     version: 0.1,
     title,
     description,
-    //userid: '',
+    userid,   // ObjectID
     status,
     highlights,
     tags,
