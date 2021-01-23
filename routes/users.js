@@ -3,7 +3,7 @@ const router = express.Router();
 
 const user = require("../controllers/userController");
 
-// ROUTES FOR USER. PREFIX /USERS
+// ROUTES FOR USER. PREFIX /users
 
 //MVP
 router.post("/register", user.register);

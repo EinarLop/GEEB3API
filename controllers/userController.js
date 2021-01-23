@@ -1,5 +1,10 @@
 const bcrypt = require("bcrypt");
+const cookieParser = require('cookie-parser');
+const jwt = require("jsonwebtoken");
+
 const User = require("../models/user");
+require("dotenv").config();
+const SECRET= process.env.TOKENSECRET;
 
 // Route callback definitions
 
@@ -50,7 +55,10 @@ exports.register = async function (req, res) {
 };
 
 exports.login = async function (req, res) {
+  console.log(req.body);
+
   const userExists = await User.findOne({ username: req.body.username });
+ 
   if (!userExists) return res.status(400).send("Username/password is wrong");
 
   const validPass = await bcrypt.compare(
@@ -58,7 +66,32 @@ exports.login = async function (req, res) {
     userExists.password
   ); // returns true or false
   if (!validPass) return res.status(400).send("Username/password is wrong");
-  else res.send("login succesful");
+  
+  else{
+
+    
+    const token = jwt.sign({ userId: userExists._id }, SECRET);
+
+   
+
+    //res.header("auth-token", token).send(token);
+    res.cookie("JWT", token, {
+      maxAge: 86_400_000,
+  
+    });
+    //cookie with id
+   ;
+
+    res.send("login succesful");
+  } 
+
+  
+
+  // res.send({
+  //   test: "hey",
+  // });
+
+
 };
 
 exports.update = function (req, res) {
