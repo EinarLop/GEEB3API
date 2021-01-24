@@ -1,4 +1,3 @@
-// /PROJECTS MODULE FOR VIEWING, MODIFYING S AND O PROJECTS
 const express = require("express");
 const router = express.Router();
 
@@ -7,13 +6,15 @@ const oproject = require("../controllers/oprojController");
 
 const auth = require('../controllers/auth.js');
 //ROUTES FOR OPROJECT
+//   Prefix     '/oprojects'
+
 
 //MVP
 router.post("/create", auth, oproject.create);      // create one project
 
 router.get("/", oproject.getAll);       // all projects in feed
 
-// TODO: route for user's personal projects: projects by userId
+router.get("/by/:userid", oproject.getByUser)             // get list of projects by a User id
 
 router.put("/update/:id", oproject.update);         // modify one project
 

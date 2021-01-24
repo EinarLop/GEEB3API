@@ -4,7 +4,6 @@ const router = express.Router();
 // Require controller modules (callbacks for each data model)
 const oproject = require("../controllers/oprojController");
 const sproject = require("../controllers/sprojController");
-
 const skill = require("../controllers/skillController");
 
 /* Home page GET */
@@ -19,20 +18,5 @@ router.get("/about", function (req, res) {
   );
 });
 
-// ROUTES FOR TAG AND SKILL CRUD
-
-// get tag create
-
-// get skill create
-
-// get tag update form
-// post tag update
-// get skill update form
-// post skill update
-
-// get tag delete form
-// post tag delete
-// get skill delete form
-// post skill delete
 
 module.exports = router;

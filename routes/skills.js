@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const skill = require("../controllers/skillController");
 
-// PREFIJO/SKILLS
+//   Prefix     '/skills'
 router.post("/create", skill.create);
 router.get("/", skill.getAll);
 

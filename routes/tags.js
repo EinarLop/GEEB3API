@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const tag = require("../controllers/tagController");
 
-// PREFIJO TAGS
+//   Prefix     '/tags'
 
 // MVP
 router.post("/create", tag.create);

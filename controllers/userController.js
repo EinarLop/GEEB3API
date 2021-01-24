@@ -1,7 +1,6 @@
 const bcrypt = require("bcrypt");
 const cookieParser = require('cookie-parser');
 const jwt = require("jsonwebtoken");
-
 const User = require("../models/user");
 require("dotenv").config();
 const SECRET= process.env.TOKENSECRET;
@@ -20,14 +19,15 @@ exports.getOne = function (req, res) {
 // POST actions
 exports.register = async function (req, res) {
   console.log("Creating a user...");
-
+  // Verify username not taken
   const userExists = await User.findOne({ username: req.body.username });
   if (userExists) return res.status(400).send("Username already exists");
 
+  // Verify email not taken
   const emailExists = await User.findOne({ email: req.body.email });
   if (emailExists) return res.status(400).send("Email already exists");
 
-  //Joi Validation -->
+  //Joi Validation ?
   const username = req.body.username;
   const email = req.body.email;
   let password = req.body.password;
@@ -36,7 +36,6 @@ exports.register = async function (req, res) {
   password = await bcrypt.hash(password, salt);
 
   var user = new User({
-    version: 0.1,
     username,
     email,
     password,
@@ -45,47 +44,36 @@ exports.register = async function (req, res) {
     //tags3:,
     //fullname:,
     //university:,
-    //bio:,
+    //bio:,         NON-REQUIRED FIELDS
   });
 
   user
     .save()
-    .then(() => res.json("User added!"))
+    .then((newDoc) => res.json("User succesfully added!" + newDoc))
     .catch((err) => res.status(400).json("Error:" + err));
 };
 
 exports.login = async function (req, res) {
-  console.log(req.body);
-
-  const userExists = await User.findOne({ username: req.body.username });
+  console.log("Logging in..." + req.body);
  
+  // Verify user exists
+  const userExists = await User.findOne({ username: req.body.username });
   if (!userExists) return res.status(400).send("Username/password is wrong");
 
+  // Verify valid password
   const validPass = await bcrypt.compare(
     req.body.password,
     userExists.password
   ); // returns true or false
   if (!validPass) return res.status(400).send("Username/password is wrong");
-  
-  else{
-
-    
+  else{ 
     const token = jwt.sign({ userId: userExists._id }, SECRET);
-
-   
-
     //res.header("auth-token", token).send(token);
-    res.cookie("JWT", token, {
+    res.cookie("JWT", token, {    // token is saved to a cookie and sent back to client
       maxAge: 86_400_000,
-  
     });
-    //cookie with id
-   ;
-
-    res.send("login succesful");
+    res.send("Login succesful. Welcome, " + userExists.username);
   } 
-
-  
 
   // res.send({
   //   test: "hey",

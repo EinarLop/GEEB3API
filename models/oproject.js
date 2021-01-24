@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const oprojectSchema = new Schema({
-  version: Number, // schema version
   title: { type: String, required: true, minlength: 5, maxlength:50},
   description: { type: String, required: true, minlength:5, maxlength:300 },
   userid: { type: Schema.Types.ObjectId, ref: "User", required: false },
