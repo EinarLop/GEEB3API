@@ -3,13 +3,9 @@ const Tag = require("../models/tag");
 const Skill = require("../models/skill");
 const async = require("async");
 const mongoose = require('mongoose');
-// Route callback definitions
-
 // GET actions
-
 // information for the object comes in req.body if we're using json
 exports.create = function (req, res) {
-  // const version = req.body.version;
   console.log(req.userId);
   const title = req.body.title;
   const description = req.body.description;
@@ -20,8 +16,18 @@ exports.create = function (req, res) {
   const tags = req.body.tags;
   const skills = req.body.skills;
 
+  /*
+  {
+    "title": "Geeb Project",
+    "description": "A long-term independent networking project made with the MERN stack",
+    "highlights": ["No highlights yet"],
+    "tags": ["MERN", "Web App"],
+    "skills": ["Fullstack developer"],
+    "desirables": ["Likes programming!"]
+  }
+  */
+
   var oproject = new Oproject({
-    version: 0.1,
     title,
     description,
     userid,   // ObjectID
@@ -31,13 +37,16 @@ exports.create = function (req, res) {
     skills,
     desirables,
   });
+
+  console.log("New Project: \n" + oproject);
+
   oproject.save().then((newDoc) => {
-    // use the given Sproject Tags and Skills to either create them or add the reference.
-    async.parallel(
+    // For every Skill or Tag, if not existing create new, else add the projectId reference.
+    async.parallel(     // save Skills and Tags to database in parallel fashion
       {
         tags: async function (callback) {
           const oprojects = [newDoc._id];
-          for (let i = 0; i < newDoc.tags.length; i++) {
+          for (let i = 0; i < newDoc.tags.length; i++) {    // iterate over the project's tags array
             const tagName = newDoc.tags[i];
             let tag = await Tag.findOne({ name: tagName });
             if (!tag) {
@@ -61,7 +70,7 @@ exports.create = function (req, res) {
         skills: async function (callback) {
           // save new skills and update existing ones.
           const oprojects = [newDoc._id];
-          for (let i = 0; i < newDoc.skills.length; i++) {
+          for (let i = 0; i < newDoc.skills.length; i++) {    // iterate over the project's skills array
             const skillName = newDoc.skills[i];
             let skill = await Tag.findOne({ name: skillName });
             if (!skill) {
@@ -86,8 +95,9 @@ exports.create = function (req, res) {
         console.log("Callback running");
         // objeto con atributos tags, skills, que incluyen los resultados
         if (err) {
-          res.status(400).json("Error" + err);
+          res.status(500).json("Error" + err);
         }
+        console.log("Callback finished succesfully");
         res.send("Created succesfully: " + results);
       }
     );
@@ -97,7 +107,7 @@ exports.create = function (req, res) {
 exports.getAll = function (req, res) {
   Oproject.find()
     .then((oproject) => res.json(oproject))
-    .catch((err) => res.status(400).json("Error: " + err));
+    .catch((err) => res.status(500).json("Error: " + err));
 };
 
 exports.update = function (req, res) {
@@ -119,15 +129,24 @@ exports.delete = function (req, res) {
 exports.deleteAll = function (req, res) {
   Oproject.deleteMany({ status: "Open" })
     .then(function () {
-      console.log("Data deleted"); // Success
+      res.send("Data deleted"); // Success
     })
     .catch(function (error) {
-      console.log(error); // Failure
+      res.send(error); // Failure
     });
 };
 
 exports.getOne = function (req, res) {
   Oproject.findById(req.params.id)
   .then((oproject) => res.json(oproject))
-  .catch((err) => res.status(400).json("Error: " + err));
+  .catch((err) => res.status(500).json("Error: " + err));
 };
+
+
+exports.getByUser = function(req, res) {      // works well
+  Oproject.find({userid: mongoose.Types.ObjectId(req.params.userid)})
+  .then(projects => res.json(projects))
+  .catch(err => res.status(500).json("Error" + err));
+}
+
+// Changed status errors to 500 'Internal Server Error'. 

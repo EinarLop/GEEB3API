@@ -38,9 +38,9 @@ exports.update = function (req, res) {
 exports.deleteAll = function (req, res) {
   Tag.deleteMany({ name: { $ne: "a" } })
     .then(function () {
-      console.log("Data deleted"); // Success
+     res.send("Data deleted"); // Success
     })
     .catch(function (error) {
-      console.log(error); // Failure
+      res.send(error); // Failure
     });
 };

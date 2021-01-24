@@ -3,6 +3,8 @@ const router = express.Router();
 
 const sproject = require("../controllers/sprojController");
 
+//   Prefix     '/sprojects'
+
 router.put("/create", sproject.create); // change to put as a test, to avoid duplication of skills
 
 router.put("/update/:id", sproject.update);
