@@ -11,7 +11,7 @@ router.post("/login", user.login);
 router.get("/", user.getAll); // fetch all users data
 
 //Extras
-router.put("/update/:id", user.update);     // could also use patch
+router.patch("/update/:id", user.update);     // could also use patch
 router.get("/delete/:id", user.delete);
 router.get("/:id", user.getOne);
 

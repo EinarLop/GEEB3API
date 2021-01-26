@@ -11,6 +11,6 @@ router.get("/:id", tag.getOne);
 
 // Extras
 router.post("/delete/:id", tag.delete);
-router.put("/update/:id", tag.update);
+router.patch("/update/:id", tag.update);
 router.post("/deleteAll", tag.deleteAll);
 module.exports = router;

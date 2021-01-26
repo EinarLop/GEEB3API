@@ -16,7 +16,7 @@ router.get("/", oproject.getAll);       // all projects in feed
 
 router.get("/by/:userid", oproject.getByUser)             // get list of projects by a User id
 
-router.put("/update/:id", oproject.update);         // modify one project
+router.patch("/update/:id", oproject.update);         // modify one project
 
 router.post("delete/:id", oproject.delete);         // delete one project
 
