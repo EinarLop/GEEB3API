@@ -19,8 +19,9 @@
     "nodemon": "^2.0.6"
   },
   "scripts": {
-    "start": "nodemon ./app.js",
-    "devstart": "SET DEBUG=local-library:* & npm run start"
+    "start": "node ./app.js",
+    "devstart": "nodemon ./app.js",
+    "debugstart": "SET DEBUG=local-library:* & npm run start"
   },
   "repository": {
     "type": "git",
