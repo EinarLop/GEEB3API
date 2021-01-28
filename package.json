@@ -21,11 +21,7 @@
   "scripts": {
     "start": "node ./app.js",
     "devstart": "nodemon ./app.js",
-<<<<<<< HEAD
     "debugstart": "SET DEBUG=local-library:* & npm run start"
-=======
-    "debugging": "SET DEBUG=local-library:* & npm run start"
->>>>>>> f6ae533afbaac8d481f4df27ecabc0585bc1d89a
   },
   "repository": {
     "type": "git",
