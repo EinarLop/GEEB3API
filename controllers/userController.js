@@ -70,6 +70,7 @@ exports.login = async function (req, res) {
     const token = jwt.sign({ userId: userExists._id }, SECRET);
     //res.header("auth-token", token).send(token);
     res.cookie("JWT", token, {    // token is saved to a cookie and sent back to client
+      domain: '.geeb-3.vercel.app',
       maxAge: 86_400_000,
     });
     res.send("Login succesful. Welcome, " + userExists.username);
