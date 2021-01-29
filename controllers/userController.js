@@ -1,9 +1,9 @@
 const bcrypt = require("bcrypt");
-const cookieParser = require('cookie-parser');
+const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 require("dotenv").config();
-const SECRET= process.env.TOKENSECRET;
+const SECRET = process.env.TOKENSECRET;
 
 // Route callback definitions
 
@@ -55,7 +55,7 @@ exports.register = async function (req, res) {
 
 exports.login = async function (req, res) {
   console.log("Logging in..." + req.body);
- 
+
   // Verify user exists
   const userExists = await User.findOne({ username: req.body.username });
   if (!userExists) return res.status(400).send("Username/password is wrong");
@@ -66,20 +66,20 @@ exports.login = async function (req, res) {
     userExists.password
   ); // returns true or false
   if (!validPass) return res.status(400).send("Username/password is wrong");
-  else{ 
+  else {
     const token = jwt.sign({ userId: userExists._id }, SECRET);
     //res.header("auth-token", token).send(token);
-    res.cookie("JWT", token, {    // token is saved to a cookie and sent back to client
+    res.cookie("JWT", token, {
+      // token is saved to a cookie and sent back to client
       maxAge: 86_400_000,
+      domain: "https://geeb-3.vercel.app",
     });
     res.send("Login succesful. Welcome, " + userExists.username);
-  } 
+  }
 
   // res.send({
   //   test: "hey",
   // });
-
-
 };
 
 exports.update = function (req, res) {
