@@ -1,5 +1,4 @@
 const bcrypt = require("bcrypt");
-const cookieParser = require('cookie-parser');
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 require("dotenv").config();
@@ -68,18 +67,13 @@ exports.login = async function (req, res) {
   if (!validPass) return res.status(400).send("Username/password is wrong");
   else{ 
     const token = jwt.sign({ userId: userExists._id }, SECRET);
-    //res.header("auth-token", token).send(token);
-    res.cookie("JWT", token, {    // token is saved to a cookie and sent back to client
-      domain: '.geeb-3.vercel.app',
-      maxAge: 86_400_000,
-    });
-    res.send("Login succesful. Welcome, " + userExists.username);
+    res.header("auth-token", token).send("This is our tokken");
+    // res.cookie("JWT", token, {    // token is saved to a cookie and sent back to client
+    //   domain: '.geeb-3.vercel.app',
+    //   maxAge: 86_400_000,   
+    // });
+    //res.send("Login succesful. Welcome, " + userExists.username);
   } 
-
-  // res.send({
-  //   test: "hey",
-  // });
-
 
 };
 

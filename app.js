@@ -8,7 +8,8 @@ const app = express();
 
 app.use(express.json());
 app.use(cors({
-  origin: 'https://geeb-3.vercel.app',      // change to Vercel
+  origin: 'https://geeb-3.vercel.app',
+  exposedHeaders: 'auth-token',      // change to Vercel https://geeb-3.vercel.app
   // LE PONGO EL MISMO DOMINIO QUE NUESTRA APP DE VERCEL? LO DE GEEB-3
   credentials: true     // so that cookie is received by front
   }));
