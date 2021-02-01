@@ -18,6 +18,7 @@ exports.getOne = function (req, res) {
 // POST actions
 exports.register = async function (req, res) {
   console.log("Creating a user...");
+  console.log(req.body);
   // Verify username not taken
   const userExists = await User.findOne({ username: req.body.username });
   if (userExists) return res.status(400).send("Username already exists");
@@ -29,10 +30,9 @@ exports.register = async function (req, res) {
   //Joi Validation ?
   const username = req.body.username;
   const email = req.body.email;
-  let password = req.body.password;
 
   const salt = await bcrypt.genSalt(10);
-  password = await bcrypt.hash(password, salt);
+  const password = await bcrypt.hash(req.body.password, salt);
 
   var user = new User({
     username,

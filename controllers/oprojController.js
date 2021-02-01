@@ -149,4 +149,9 @@ exports.getByUser = function(req, res) {      // works well
   .catch(err => res.status(500).json("Error" + err));
 }
 
+exports.getMine = function(req, res) {   
+  Oproject.find({userid: mongoose.Types.ObjectId(req.userId.userId)})
+  .then(projects => res.json(projects))
+  .catch(err => res.status(500).json("Error" + err));
+}
 // Changed status errors to 500 'Internal Server Error'. 
