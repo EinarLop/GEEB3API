@@ -1,9 +1,8 @@
 const bcrypt = require("bcrypt");
-const cookieParser = require('cookie-parser');
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 require("dotenv").config();
-const SECRET= process.env.TOKENSECRET;
+const SECRET = process.env.TOKENSECRET;
 
 // Route callback definitions
 
@@ -19,6 +18,7 @@ exports.getOne = function (req, res) {
 // POST actions
 exports.register = async function (req, res) {
   console.log("Creating a user...");
+  console.log(req.body);
   // Verify username not taken
   const userExists = await User.findOne({ username: req.body.username });
   if (userExists) return res.status(400).send("Username already exists");
@@ -30,21 +30,14 @@ exports.register = async function (req, res) {
   //Joi Validation ?
   const username = req.body.username;
   const email = req.body.email;
-  let password = req.body.password;
 
   const salt = await bcrypt.genSalt(10);
-  password = await bcrypt.hash(password, salt);
+  const password = await bcrypt.hash(req.body.password, salt);
 
   var user = new User({
     username,
     email,
     password,
-    //tags1:,
-    //tags2:,
-    //tags3:,
-    //fullname:,
-    //university:,
-    //bio:,         NON-REQUIRED FIELDS
   });
 
   user
@@ -54,8 +47,7 @@ exports.register = async function (req, res) {
 };
 
 exports.login = async function (req, res) {
-  console.log("Logging in..." + req.body);
- 
+  console.log(req.body);
   // Verify user exists
   const userExists = await User.findOne({ username: req.body.username });
   if (!userExists) return res.status(400).send("Username/password is wrong");
@@ -66,20 +58,15 @@ exports.login = async function (req, res) {
     userExists.password
   ); // returns true or false
   if (!validPass) return res.status(400).send("Username/password is wrong");
-  else{ 
+  else {
     const token = jwt.sign({ userId: userExists._id }, SECRET);
-    //res.header("auth-token", token).send(token);
-    res.cookie("JWT", token, {    // token is saved to a cookie and sent back to client
-      maxAge: 86_400_000,
-    });
-    res.send("Login succesful. Welcome, " + userExists.username);
+    res.header("auth-token", token).send("This is our tokken");
+    // res.cookie("JWT", token, {    // token is saved to a cookie and sent back to client
+    //   domain: '.geeb-3.vercel.app',
+    //   maxAge: 86_400_000,   
+    // });
+    //res.send("Login succesful. Welcome, " + userExists.username);
   } 
-
-  // res.send({
-  //   test: "hey",
-  // });
-
-
 };
 
 exports.update = function (req, res) {

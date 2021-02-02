@@ -12,10 +12,11 @@ module.exports = function auth(req, res, next) {
     try {
       const verified = jwt.verify(token, secret);
       req.userId = verified;
-      console.log("GooD tOKEN")
+      console.log("Valid token. req.userId:")
+      console.log(req.userId)   // what is userId?
       next();
     } catch (err) {
-      console.log("BAD tOKEN")
+      console.log("Bad token")
       return res.status(400).send("Invalid token");
     }
 }

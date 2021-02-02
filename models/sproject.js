@@ -5,12 +5,15 @@ const sprojectSchema = new Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
   userid: { type: Schema.Types.ObjectId, ref: "User", required: false }, // required: true
-  tags: [String],
+  collaborators: [String],
+  tags: {type: [String], validate: [tagLimit, "Exceeds tag limit"]},
   links: [String],
   imageurls: [String],
 });
 
-// arrayLimit de 10 para Tag
+function tagLimit(arr) {
+  return arr.length <= 6;
+}
 
 sprojectSchema.virtual("url").get(() => {
   return "/catalog/sproject/" + this._id;

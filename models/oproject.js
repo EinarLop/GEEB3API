@@ -15,15 +15,15 @@ const oprojectSchema = new Schema({
   tags: { type: [String], validate: [tagLimit, "Exceeds limit"] },    // string names of tags
   skills: { type: [String], validate: [tagLimit, "Exceeds limit"] },  // string names of skill tags  
   desirables: { type: [String], validate: [arrayLimit, "Exceeds limit"] },
+  created: {type: Date, default: Date.now()}
 });
-
 
 function arrayLimit(arr) {
   return arr.length <= 5;
 }
 
 function tagLimit(arr) {
-  return arr.length <= 3;
+  return arr.length <= 6;
 }
 
 oprojectSchema.virtual("url").get(() => {
