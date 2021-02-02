@@ -38,12 +38,6 @@ exports.register = async function (req, res) {
     username,
     email,
     password,
-    //tags1:,
-    //tags2:,
-    //tags3:,
-    //fullname:,
-    //university:,
-    //bio:,         NON-REQUIRED FIELDS
   });
 
   user
@@ -53,8 +47,7 @@ exports.register = async function (req, res) {
 };
 
 exports.login = async function (req, res) {
-  console.log("Logging in..." + req.body);
-
+  console.log(req.body);
   // Verify user exists
   const userExists = await User.findOne({ username: req.body.username });
   if (!userExists) return res.status(400).send("Username/password is wrong");
@@ -74,7 +67,6 @@ exports.login = async function (req, res) {
     // });
     //res.send("Login succesful. Welcome, " + userExists.username);
   } 
-
 };
 
 exports.update = function (req, res) {
