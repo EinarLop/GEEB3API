@@ -20,7 +20,6 @@ exports.create = async function (req, res) {
     //userid: '',
     links,
     imageurls,
-
     tags,
   });
 
@@ -74,15 +73,46 @@ exports.create = async function (req, res) {
 };
 
 exports.getAll = function (req, res) {
-  res.send("List of all Portfolio projects here");
+  Sproject.find().populate('userid')
+    .then((projects) => res.json(projects))
+    .catch((err) => res.status(500).json("Error: " + err));
 };
 
 exports.getOne = function (req, res) {
-  res.send("List of specific project");
+  const token = req.header("auth-token");
+  Sproject.findById(req.params.id)
+  .then((oproject) => {
+
+    let visitorIsOwner = false;
+    if (typeof(token) != 'undefined') {
+      try {
+        const verified = jwt.verify(token, secret);
+        let visitor = new ObjectID(verified.userId);
+        if (oproject.userid.equals(visitor)){
+          visitorIsOwner = true;
+        }
+      } catch (err) {
+        console.log("Bad token: " + err)
+      }
+    }
+    const response = {
+      project: oproject,
+      isOwner: visitorIsOwner
+    }
+    res.json(response);   //in the front-end we must access response.data
+  })
+  .catch((err) => res.status(500).json("Error: " + err));
+
 };
 
 exports.delete = function (req, res) {
-  res.send("Deleting a project..." + req.params.id);
+  Sproject.findOneAndDelete({ _id: req.params.id })
+    .then((deletedDoc) => {
+      res.send("Deleted succesfully: " + deletedDoc);
+    })
+    .catch((err) => {
+      res.status(500).json("Error:" + err);
+    });
 };
 
 exports.update = function (req, res) {
