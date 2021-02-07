@@ -12,7 +12,34 @@ exports.getAll = function (req, res) {
 };
 
 exports.getOne = function (req, res) {
-  res.send("Send details of user: " + req.params.id);
+  const token = req.header("auth-token");
+  User.findById(req.params.id)
+    .then((user) => {
+      let visitorIsOwner = false;
+      if (typeof token != "undefined") {
+        try {
+          const verified = jwt.verify(token, secret);
+          console.log("JWT verified data:");
+          console.log(verified);
+          let visitor = new ObjectID(verified.userId);
+          console.log("visitor:" + visitor + " type: " + typeof visitor);
+          console.log("project user: " + user.userid);
+          console.log("visitor is instance objectid?:");
+          console.log(visitor instanceof ObjectID);
+          if (user.userid.equals(visitor)) {
+            visitorIsOwner = true;
+          }
+        } catch (err) {
+          console.log("Bad token: " + err);
+        }
+      }
+      const response = {
+        user: user,
+        isOwner: visitorIsOwner,
+      };
+      res.json(response); //in the front-end we must access response.data
+    })
+    .catch((err) => res.status(500).json("Error: " + err));
 };
 
 // POST actions
@@ -30,6 +57,15 @@ exports.register = async function (req, res) {
   //Joi Validation ?
   const username = req.body.username;
   const email = req.body.email;
+  const fullname = req.body.fullname;
+  const university = req.body.university;
+  const semester = req.body.semester;
+  const major = req.body.major;
+  const bio = req.body.bio;
+  const links = req.body.links;
+  const mastered = req.body.mastered;
+  const learning = req.body.learning;
+  const want = req.body.want;
 
   const salt = await bcrypt.genSalt(10);
   const password = await bcrypt.hash(req.body.password, salt);
@@ -38,6 +74,15 @@ exports.register = async function (req, res) {
     username,
     email,
     password,
+    fullname,
+    university,
+    semester,
+    major,
+    bio,
+    links,
+    mastered,
+    learning,
+    want,
   });
 
   user
@@ -63,10 +108,10 @@ exports.login = async function (req, res) {
     res.header("auth-token", token).send("This is our tokken");
     // res.cookie("JWT", token, {    // token is saved to a cookie and sent back to client
     //   domain: '.geeb-3.vercel.app',
-    //   maxAge: 86_400_000,   
+    //   maxAge: 86_400_000,
     // });
     //res.send("Login succesful. Welcome, " + userExists.username);
-  } 
+  }
 };
 
 exports.update = function (req, res) {
