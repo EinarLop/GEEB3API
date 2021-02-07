@@ -5,7 +5,7 @@ const sproject = require("../controllers/sprojController");
 
 //   Prefix     '/sprojects'
 
-router.put("/create", sproject.create); // change to put as a test, to avoid duplication of skills
+router.post("/create", auth, sproject.create); 
 
 router.patch("/update/:id", sproject.update);
 

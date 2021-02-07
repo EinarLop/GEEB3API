@@ -1,6 +1,9 @@
 const Sproject = require("../models/sproject");
 const Tag = require("../models/tag");
-const Skill = require("../models/skill");
+const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
+const ObjectID = require('mongoose').mongo.ObjectID;
+require('dotenv').config();
 
 // Nombres Geeb Projects
 // Cloud provider
