@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const Applicant = require("../models/applicant");
 
 exports.create = function (req, res) {
-    const userid;
+    let userid;
     const oprojectid = req.body.oprojectid;
     const motive = req.body.motive;
     const token = req.header("auth-token");
