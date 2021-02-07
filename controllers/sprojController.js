@@ -83,14 +83,14 @@ exports.getAll = function (req, res) {
 exports.getOne = function (req, res) {
   const token = req.header("auth-token");
   Sproject.findById(req.params.id)
-  .then((oproject) => {
+  .then((sproject) => {
 
     let visitorIsOwner = false;
     if (typeof(token) != 'undefined') {
       try {
         const verified = jwt.verify(token, secret);
         let visitor = new ObjectID(verified.userId);
-        if (oproject.userid.equals(visitor)){
+        if (sproject.userid.equals(visitor)){
           visitorIsOwner = true;
         }
       } catch (err) {
@@ -98,7 +98,7 @@ exports.getOne = function (req, res) {
       }
     }
     const response = {
-      project: oproject,
+      project: sproject,
       isOwner: visitorIsOwner
     }
     res.json(response);   //in the front-end we must access response.data
