@@ -3,9 +3,8 @@ const router = express.Router();
 
 // Require controller modules (callbacks for each data model)
 const oproject = require("../controllers/oprojController");
-
 const auth = require('../controllers/auth.js');
-//ROUTES FOR OPROJECT
+
 //   Prefix     '/oprojects'
 
 //MVP
