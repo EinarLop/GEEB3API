@@ -146,7 +146,6 @@ exports.getOne = function (req, res) {
   const token = req.header("auth-token");
   Oproject.findById(req.params.id)
   .then((oproject) => {
-
     let visitorIsOwner = false;
     if (typeof(token) != 'undefined') {
       try {
@@ -158,6 +157,7 @@ exports.getOne = function (req, res) {
         console.log("project user: " + oproject.userid);
         console.log("visitor is instance objectid?:")
         console.log(visitor instanceof ObjectID);
+        console.log(oproject.userid.equals(visitor))
         if (oproject.userid.equals(visitor)){
           visitorIsOwner = true;
         }

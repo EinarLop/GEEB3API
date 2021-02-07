@@ -3,10 +3,19 @@ const mongoose = require('mongoose');
 const Applicant = require("../models/applicant");
 
 exports.create = function (req, res) {
-    const userid = mongoose.Types.ObjectId(req.body.userid);
+    const userid;
     const oprojectid = req.body.oprojectid;
     const motive = req.body.motive;
-
+    const token = req.header("auth-token");
+    if (typeof(token) != 'undefined') {
+      try {
+        const verified = jwt.verify(token, secret);
+        userid = new ObjectID(verified.userId);
+        
+      } catch (err) {
+        console.log("Bad token: " + err)
+      }
+    }
     var applicant = new Applicant({
         userid,
         oprojectid,
