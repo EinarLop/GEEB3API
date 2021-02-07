@@ -8,7 +8,7 @@ const sprojectSchema = new Schema({
   collaborators: [String],
   tags: {type: [String], validate: [tagLimit, "Exceeds tag limit"]},
   links: [String],
-  imageurls: [String],
+  imageurls: {type: [String], default: ["gs://geebimages.appspot.com/geek.jpg"]},
 });
 
 function tagLimit(arr) {

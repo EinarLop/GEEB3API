@@ -11,9 +11,9 @@ module.exports = function auth(req, res, next) {
     }
     try {
       const verified = jwt.verify(token, secret);
-      req.userId = verified;
-      console.log("Valid token. req.userId:")
-      console.log(req.userId)   // what is userId?
+      req.user = verified;
+      console.log("Valid token. req.user:")
+      console.log(req.user)   // what is userId?
       next();
     } catch (err) {
       console.log("Bad token")

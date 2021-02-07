@@ -12,15 +12,13 @@ exports.create = async function (req, res) {
   const links = req.body.links;
   const imageurls = req.body.imageurls;
   const tags = req.body.tags;
-
+  
   var sproject = new Sproject({
-    version: 0.1,
     title,
     description,
-    //userid: '',
+    userid: mongoose.Types.ObjectId(req.user.userId),
     links,
     imageurls,
-
     tags,
   });
 
@@ -88,6 +86,11 @@ exports.delete = function (req, res) {
 exports.update = function (req, res) {
   res.send("Updating a project..." + req.params.id);
 };
+
+exports.setImages = function (req, res) {
+  //Sproject.updateOne();
+  return;
+}
 
 exports.deleteAll = function (req, res) {
   Sproject.deleteMany()

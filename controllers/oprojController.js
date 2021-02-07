@@ -4,25 +4,23 @@ const Skill = require("../models/skill");
 const async = require("async");
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
-const ObjectID = require('mongoose').mongo.ObjectID
+const ObjectID = require('mongoose').mongo.ObjectID;
 require('dotenv').config();
 
-let secret = process.env.TOKENSECRET
+let secret = process.env.TOKENSECRET;
 
 // GET actions
 // information for the object comes in req.body if we're using json
 exports.create = function (req, res) {
-  console.log("req.userId:")
-  console.log(req.userId);
+  console.log(req.user);      // req.user set in auth middleware
   const title = req.body.title;
   const description = req.body.description;
-  const userid = mongoose.Types.ObjectId(req.userId.userId);   // fix userId.userId
+  const userid = mongoose.Types.ObjectId(req.user.userId);   // fix userId.userId
   const status = req.body.status;
   const highlights = req.body.highlights;
   const desirables = req.body.desirables;
   const tags = req.body.tags;
   const skills = req.body.skills;
-
   /*
   {
     "title": "Geeb Project",
@@ -184,7 +182,7 @@ exports.getByUser = function(req, res) {      // works well
 }
 
 exports.getMine = function(req, res) {   
-  Oproject.find({userid: mongoose.Types.ObjectId(req.userId.userId)})
+  Oproject.find({userid: mongoose.Types.ObjectId(req.user.userId)})
   .then(projects => res.json(projects))
   .catch(err => res.status(500).json("Error" + err));
 }
