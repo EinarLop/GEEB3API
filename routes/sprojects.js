@@ -12,7 +12,6 @@ router.patch("/update/:id", sproject.update);
 
 router.post("/delete/:id", sproject.delete);
 router.post("/deleteall", sproject.deleteAll);
-
 router.get("/:id", sproject.getOne);
 
 router.get("/", sproject.getAll);
