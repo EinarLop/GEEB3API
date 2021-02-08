@@ -2,20 +2,20 @@ const Oproject = require("../models/oproject");
 const Tag = require("../models/tag");
 const Skill = require("../models/skill");
 const async = require("async");
-const mongoose = require('mongoose');
-const jwt = require('jsonwebtoken');
-const ObjectID = require('mongoose').mongo.ObjectID;
-require('dotenv').config();
+const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken");
+const ObjectID = require("mongoose").mongo.ObjectID;
+require("dotenv").config();
 
 let secret = process.env.TOKENSECRET;
 
 // GET actions
 // information for the object comes in req.body if we're using json
 exports.create = function (req, res) {
-  console.log(req.user);      // req.user set in auth middleware
+  console.log(req.user); // req.user set in auth middleware
   const title = req.body.title;
   const description = req.body.description;
-  const userid = mongoose.Types.ObjectId(req.user.userId);   // fix userId.userId
+  const userid = mongoose.Types.ObjectId(req.user.userId); // fix userId.userId
   const status = req.body.status;
   const highlights = req.body.highlights;
   const desirables = req.body.desirables;
@@ -35,7 +35,7 @@ exports.create = function (req, res) {
   var oproject = new Oproject({
     title,
     description,
-    userid,   // User's ObjectID
+    userid, // User's ObjectID
     status,
     highlights,
     tags,
@@ -47,12 +47,13 @@ exports.create = function (req, res) {
 
   oproject.save().then((newDoc) => {
     // For every Skill & Tag, if not existing create new, else add the projectId reference.
-    async.parallel(     
+    async.parallel(
       // save Skills and Tags to database in parallel fashion
       {
         tags: async function (callback) {
           const oprojects = [newDoc._id];
-          for (let i = 0; i < newDoc.tags.length; i++) {    // iterate over the project's tags array
+          for (let i = 0; i < newDoc.tags.length; i++) {
+            // iterate over the project's tags array
             const tagName = newDoc.tags[i];
             let tag = await Tag.findOne({ name: tagName });
             if (!tag) {
@@ -76,7 +77,8 @@ exports.create = function (req, res) {
         skills: async function (callback) {
           // save new skills and update existing ones.
           const oprojects = [newDoc._id];
-          for (let i = 0; i < newDoc.skills.length; i++) {    // iterate over the project's skills array
+          for (let i = 0; i < newDoc.skills.length; i++) {
+            // iterate over the project's skills array
             const skillName = newDoc.skills[i];
             let skill = await Skill.findOne({ name: skillName });
             if (!skill) {
@@ -111,7 +113,8 @@ exports.create = function (req, res) {
 };
 
 exports.getAll = function (req, res) {
-  Oproject.find().populate('userid')
+  Oproject.find()
+    .populate("userid")
     .then((projects) => res.json(projects))
     .catch((err) => res.status(500).json("Error: " + err));
 };
@@ -145,45 +148,40 @@ exports.deleteAll = function (req, res) {
 exports.getOne = function (req, res) {
   const token = req.header("auth-token");
   Oproject.findById(req.params.id)
-  .then((oproject) => {
-    let visitorIsOwner = false;
-    if (typeof(token) != 'undefined') {
-      try {
-        const verified = jwt.verify(token, secret);
-        console.log("JWT verified data:")
-        console.log(verified)
-        let visitor = new ObjectID(verified.userId);
-        console.log("visitor:" + visitor + " type: " + typeof(visitor));
-        console.log("project user: " + oproject.userid);
-        console.log("visitor is instance objectid?:")
-        console.log(visitor instanceof ObjectID);
-        console.log(oproject.userid.equals(visitor))
-        if (oproject.userid.equals(visitor)){
-          visitorIsOwner = true;
+    .then((oproject) => {
+      let visitorIsOwner = false;
+      if (typeof token != "undefined") {
+        try {
+          const verified = jwt.verify(token, secret);
+          console.log("JWT verified data:");
+          console.log(verified);
+          let visitor = new ObjectID(verified.userId);
+          if (oproject.userid.equals(visitor)) {
+            visitorIsOwner = true;
+          }
+        } catch (err) {
+          console.log("Bad token: " + err);
         }
-      } catch (err) {
-        console.log("Bad token: " + err)
       }
-    }
-    const response = {
-      project: oproject,
-      isOwner: visitorIsOwner
-    }
-    res.json(response);   //in the front-end we must access response.data
-  })
-  .catch((err) => res.status(500).json("Error: " + err));
+      const response = {
+        project: oproject,
+        isOwner: visitorIsOwner,
+      };
+      res.json(response); //in the front-end we must access response.data
+    })
+    .catch((err) => res.status(500).json("Error: " + err));
 };
 
+exports.getByUser = function (req, res) {
+  // works well
+  Oproject.find({ userid: mongoose.Types.ObjectId(req.params.userid) })
+    .then((projects) => res.json(projects))
+    .catch((err) => res.status(500).json("Error" + err));
+};
 
-exports.getByUser = function(req, res) {      // works well
-  Oproject.find({userid: mongoose.Types.ObjectId(req.params.userid)})
-  .then(projects => res.json(projects))
-  .catch(err => res.status(500).json("Error" + err));
-}
-
-exports.getMine = function(req, res) {   
-  Oproject.find({userid: mongoose.Types.ObjectId(req.user.userId)})
-  .then(projects => res.json(projects))
-  .catch(err => res.status(500).json("Error" + err));
-}
-// Changed status errors to 500 'Internal Server Error'. 
+exports.getMine = function (req, res) {
+  Oproject.find({ userid: mongoose.Types.ObjectId(req.user.userId) })
+    .then((projects) => res.json(projects))
+    .catch((err) => res.status(500).json("Error" + err));
+};
+// Changed status errors to 500 'Internal Server Error'.
