@@ -1,8 +1,10 @@
 const bcrypt = require("bcrypt");
+const { response } = require("express");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 require("dotenv").config();
 const SECRET = process.env.TOKENSECRET;
+const ObjectID = require("mongoose").mongo.ObjectID;
 
 // Route callback definitions
 
@@ -105,13 +107,57 @@ exports.login = async function (req, res) {
   if (!validPass) return res.status(400).send("Username/password is wrong");
   else {
     const token = jwt.sign({ userId: userExists._id }, SECRET);
-    res.header("auth-token", token).send("This is our tokken");
+    res.header("auth-token", token).json({ userId: userExists._id }); // also send the user id. for localstorage
     // res.cookie("JWT", token, {    // token is saved to a cookie and sent back to client
     //   domain: '.geeb-3.vercel.app',
     //   maxAge: 86_400_000,
     // });
     //res.send("Login succesful. Welcome, " + userExists.username);
   }
+};
+
+exports.getMine = function (req, res) {
+  console.log("Popop");
+  //const userid = mongoose.Types.ObjectId(req.user.userId);
+  let userid = new ObjectID(req.user.userId);
+  console.log(userId);
+
+  User.findById(userid)
+    .then((user) => {
+      res.json(user);
+    })
+    .catch((err) => res.status(500).json("Error2: " + err));
+};
+
+exports.update = function (req, res) {
+  res.send("Updating a project..." + req.params.id);
+};
+
+exports.getOne = function (req, res) {
+  const token = req.header("auth-token");
+  User.findById(req.params.id)
+    .then((user) => {
+      let visitorIsOwner = false;
+      if (typeof token != "undefined") {
+        try {
+          const verified = jwt.verify(token, secret);
+          console.log("JWT verified data:");
+          console.log(verified);
+          let visitor = new ObjectID(verified.userId);
+          if (user.userid.equals(visitor)) {
+            visitorIsOwner = true;
+          }
+        } catch (err) {
+          console.log("Bad token: " + err);
+        }
+      }
+      const response = {
+        user: user,
+        isOwner: visitorIsOwner,
+      };
+      res.json(response); //in the front-end we must access response.data
+    })
+    .catch((err) => res.status(500).json("Error: " + err));
 };
 
 exports.update = function (req, res) {
