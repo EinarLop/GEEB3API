@@ -20,7 +20,7 @@ exports.getOne = function (req, res) {
       let visitorIsOwner = false;
       if (typeof token != "undefined") {
         try {
-          const verified = jwt.verify(token, secret);
+          const verified = jwt.verify(token, SECRET);
           console.log("JWT verified data:");
           console.log(verified);
           let visitor = new ObjectID(verified.userId);
@@ -134,13 +134,15 @@ exports.update = function (req, res) {
 };
 
 exports.getOne = function (req, res) {
+  console.log("Backend request is get user:", req.params.id);
   const token = req.header("auth-token");
   User.findById(req.params.id)
     .then((user) => {
+      console.log("Found a user");
       let visitorIsOwner = false;
       if (typeof token != "undefined") {
         try {
-          const verified = jwt.verify(token, secret);
+          const verified = jwt.verify(token, SECRET);
           console.log("JWT verified data:");
           console.log(verified);
           let visitor = new ObjectID(verified.userId);
@@ -157,7 +159,7 @@ exports.getOne = function (req, res) {
       };
       res.json(response); //in the front-end we must access response.data
     })
-    .catch((err) => res.status(500).json("Error: " + err));
+    .catch((err) => res.status(500).json("There was an error: " + err));
 };
 
 exports.update = function (req, res) {
