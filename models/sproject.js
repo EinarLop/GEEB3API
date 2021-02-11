@@ -8,7 +8,7 @@ const sprojectSchema = new Schema({
   collaborators: [String],
   tags: {type: [String], validate: [tagLimit, "Exceeds tag limit"]},
   links: [String],
-  imageurls: {type: [String], default: ["gs://geebimages.appspot.com/geek.jpg"]},
+  imageurls: {type: [String], default: ["https://firebasestorage.googleapis.com/v0/b/geebimages.appspot.com/o/geek.jpg?alt=media&token=105a4c0e-3a72-4d93-a61b-7bd07e9eb390"]},
 });
 
 function tagLimit(arr) {

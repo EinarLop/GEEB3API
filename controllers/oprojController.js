@@ -106,7 +106,9 @@ exports.create = function (req, res) {
           res.status(500).json("Error" + err);
         }
         console.log("Callback finished succesfully");
-        res.send("Created succesfully: " + results);
+        console.log("New doc's id:", newDoc._id);
+        res.json(newDoc._id);
+        //res.send("Created succesfully: " + results);
       }
     );
   });
