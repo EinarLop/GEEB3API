@@ -146,7 +146,7 @@ exports.getOne = function (req, res) {
           console.log("JWT verified data:");
           console.log(verified);
           let visitor = new ObjectID(verified.userId);
-          if (user.userid.equals(visitor)) {
+          if (user._id.equals(visitor)) {
             visitorIsOwner = true;
           }
         } catch (err) {
