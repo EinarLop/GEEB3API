@@ -16,38 +16,41 @@ const userSchema = new Schema({
     lowercase: true,
     unique: true,
     required: true,
-    //validate: [validEmail, "Not a valid email"],
+    validate: [validEmail, "Not a valid email"],
   },
   password: { type: String, required: true },
   fullname: String,
   university: {
     type: String,
     enum: [
-      "ITESM CEM",
-      "ITESM CSF",
-      "ITESM CCM",
-      "UAM",
-      "ITAM",
-      "UNAM",
-      "Universidad Iberoamericana",
-      "Universidad Anáhuac",
-      "IPN",
       "ITESM",
+      "UNAM",
+      "IPN",
+      "ITAM",
+      "IBERO",
+      "ANÁHUAC",
+      "UAM",
+      "UDLAP",
+      "LA SALLE",
     ],
     default: "ITESM",
   },
   semester: Number,
   major: String,
-  bio: { type: String, maxlength: 400 },
+  bio: { type: String, maxlength: 400, default:"Hello! I am new to GEEB."},
   links: [String],
-  mastered: [String],
-  learning: [String],
-  want: [String],
+  mastered: {type: [String], validate: [arrLimit, "Exceeds size limit"]},
+  learning: {type: [String], validate: [arrLimit, "Exceeds size limit"]},
+  want: {type: [String], validate: [arrLimit, "Exceeds size limit"]},
 });
 
 function validEmail(email) {
   let re = "/^w+([.-]?w+)*@w+([.-]?w+)*(.w{2,3})+$/";
   return re.test(email);
+}
+
+function arrLimit(arr) {
+  return arr.length <= 8;   // arbitrary num; decide later
 }
 // alternativelt use 'match' option for validation [regex, message]
 
