@@ -8,7 +8,9 @@ const auth = require('../controllers/auth');
 router.get('/', applicant.getAll);    // solo para testing
 
 // agregar auth middleware
-router.get('/:userId', applicant.getByUser);      // view my applications; requires auth of user
+router.get('/:userid', applicant.getByUser);      // view my applications; requires auth of user
+
+router.get('/project/:oprojectid', applicant.getByProject); //view appliactions of a project
 
 router.post('/create', applicant.create);      // Create Applicant object
 // all info is passed via req.body json
