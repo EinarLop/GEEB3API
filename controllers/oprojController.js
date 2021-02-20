@@ -152,7 +152,7 @@ exports.getOne = function (req, res) {
   Oproject.findById(req.params.id)
     .then((oproject) => {
       let visitorIsOwner = false;
-      if (typeof token != "undefined") {
+      if (token !== "null") {
         try {
           const verified = jwt.verify(token, secret);
           console.log("JWT verified data:");
