@@ -19,7 +19,6 @@ exports.getOne = function (req, res) {
     .then((user) => {
       let visitorIsOwner = false;
       if (token!=="null") {
-        console.log("Token truthy");
         try {
           const verified = jwt.verify(token, SECRET);
           console.log("JWT verification:");
@@ -118,7 +117,6 @@ exports.login = async function (req, res) {
 };
 
 exports.getMine = function (req, res) {
-  console.log("Popop");
   //const userid = mongoose.Types.ObjectId(req.user.userId);
   let userid = new ObjectID(req.user.userId);
   console.log(userId);
@@ -127,11 +125,41 @@ exports.getMine = function (req, res) {
     .then((user) => {
       res.json(user);
     })
-    .catch((err) => res.status(500).json("Error2: " + err));
+    .catch((err) => res.status(500).json("Error: " + err));
 };
 
-exports.update = function (req, res) {
-  res.send("Updating a user..." + req.params.id);
+exports.update = async function (req, res) {
+  // Option to use findOneAndUpdate (atomic transaction) or save (easier to read, but is not atomic, involves findOne+updateOne);
+  const {fullname, email, bio, college, major, semester, links, mastered, learning, want} = req.body;
+  const user_id = req.params.id;
+  console.log("Updating user:", user_id);
+  const userDoc = await User.findOne(user_id);
+  if (userDoc) {
+    userDoc.fullname = fullname;
+    userDoc.email = email;
+    userDoc.bio = bio;
+    userDoc.college = college;
+    userDoc.major = major;
+    userdoc.semester = semester;
+    userDoc.links = links;
+    userDoc.mastered = mastered;
+    userDoc.learning = learning;
+    userDoc.want = want;
+
+    userDoc.save(). then(updatedDoc => {
+      console.log("Update result:");
+      console.log(updatedDoc);
+      res.send("Succesfully updated user: " + updatedDoc.fullname + " (" + updatedDoc._id + ")");
+    }).catch(err => {
+      console.log("Error updating:", err);
+      res.status(500).json("Error updating:", err);
+    });
+
+  } else {
+    console.log("No such user id found!");
+    res.send("No such user id found!");
+  }
+
 };
 
 exports.delete = function (req, res) {

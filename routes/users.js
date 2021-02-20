@@ -12,7 +12,7 @@ router.post("/login", user.login);
 router.get("/", user.getAll); // fetch all users data
 
 //Extras
-router.patch("/update/:id", user.update); // could also use patch
+router.put("/update/:id", user.update);         // user id comes in req.body
 router.get("/delete/:id", user.delete);
 router.get("/:id", user.getOne);
 // router.get("/test", auth, user.getMine);
