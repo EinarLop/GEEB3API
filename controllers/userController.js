@@ -15,33 +15,34 @@ exports.getAll = function (req, res) {
 
 exports.getOne = function (req, res) {
   const token = req.header("auth-token");
+  console.log("Token:", token);
   User.findById(req.params.id)
     .then((user) => {
       let visitorIsOwner = false;
-      if (typeof token != "undefined") {
+      if (token!==null || typeof(token)!=="undefined") {
         try {
           const verified = jwt.verify(token, SECRET);
-          console.log("JWT verified data:");
+          console.log("JWT verification:");
           console.log(verified);
           let visitor = new ObjectID(verified.userId);
-          console.log("visitor:" + visitor + " type: " + typeof visitor);
-          console.log("project user: " + user.userid);
-          console.log("visitor is instance objectid?:");
-          console.log(visitor instanceof ObjectID);
-          if (user.userid.equals(visitor)) {
-            visitorIsOwner = true;
-          }
+          console.log("visitor:", visitor);
+          console.log("user _id:", user._id);
+          visitorIsOwner = user._id.equals(visitor);
         } catch (err) {
           console.log("Bad token: " + err);
         }
       }
+      console.log("Backend response for isowner:", visitorIsOwner);
       const response = {
         user: user,
         isOwner: visitorIsOwner,
       };
       res.json(response); //in the front-end we must access response.data
     })
-    .catch((err) => res.status(500).json("Error: " + err));
+    .catch((err) => {
+      console.log("Something happened:", err);
+      res.status(500).json("Error: " + err);
+    });
 };
 
 // POST actions
@@ -127,39 +128,6 @@ exports.getMine = function (req, res) {
       res.json(user);
     })
     .catch((err) => res.status(500).json("Error2: " + err));
-};
-
-exports.update = function (req, res) {
-  res.send("Updating a project..." + req.params.id);
-};
-
-exports.getOne = function (req, res) {
-  console.log("Backend request is get user:", req.params.id);
-  const token = req.header("auth-token");
-  User.findById(req.params.id)
-    .then((user) => {
-      console.log("Found a user");
-      let visitorIsOwner = false;
-      if (typeof token != "undefined") {
-        try {
-          const verified = jwt.verify(token, SECRET);
-          console.log("JWT verified data:");
-          console.log(verified);
-          let visitor = new ObjectID(verified.userId);
-          if (user._id.equals(visitor)) {
-            visitorIsOwner = true;
-          }
-        } catch (err) {
-          console.log("Bad token: " + err);
-        }
-      }
-      const response = {
-        user: user,
-        isOwner: visitorIsOwner,
-      };
-      res.json(response); //in the front-end we must access response.data
-    })
-    .catch((err) => res.status(500).json("There was an error: " + err));
 };
 
 exports.update = function (req, res) {
