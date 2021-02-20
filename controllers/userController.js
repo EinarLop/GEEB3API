@@ -14,12 +14,12 @@ exports.getAll = function (req, res) {
 };
 
 exports.getOne = function (req, res) {
-  const token = req.header("auth-token");
-  console.log("Token:", token);
+  const token = req.header("auth-token");   // returns string 'null' if not found;
   User.findById(req.params.id)
     .then((user) => {
       let visitorIsOwner = false;
-      if (token!==null || typeof(token)!=="undefined") {
+      if (token!=="null") {
+        console.log("Token truthy");
         try {
           const verified = jwt.verify(token, SECRET);
           console.log("JWT verification:");
