@@ -1,6 +1,10 @@
+const Applicant = require("../models/applicant");
 const async = require("async");
 const mongoose = require('mongoose');
-const Applicant = require("../models/applicant");
+const jwt = require("jsonwebtoken");
+const ObjectID = require("mongoose").mongo.ObjectID;
+require("dotenv").config();
+let secret = process.env.TOKENSECRET;
 
 exports.create = function (req, res) {
     let userid;
@@ -10,8 +14,11 @@ exports.create = function (req, res) {
     if (typeof(token) != 'undefined') {
       try {
         const verified = jwt.verify(token, secret);
-        userid = new ObjectID(verified.userId);
-        
+        console.log("JWT verified data:");
+        console.log(verified);
+        userid =  mongoose.Types.ObjectId(verified.userId);
+        console.log(userid)
+
       } catch (err) {
         console.log("Bad token: " + err)
       }
@@ -68,7 +75,14 @@ exports.getOne = function (req, res) {
   
   
 exports.getByUser = function(req, res) {      // works well
+    console.log(req.params.userid)
     Applicant.find({userid: mongoose.Types.ObjectId(req.params.userid)})
+    .then(applications => res.json(applications))
+    .catch(err => res.status(500).json("Error" + err));
+}
+
+exports.getByProject = function(req, res) {      // works well
+    Applicant.find({oprojectid: mongoose.Types.ObjectId(req.params.oprojectid)})
     .then(applications => res.json(applications))
     .catch(err => res.status(500).json("Error" + err));
 }
@@ -77,6 +91,7 @@ exports.getByUser = function(req, res) {      // works well
 exports.updateStatus = function(req, res) {
     // status desired is in req.body
     let update = {status: req.body.status};
+    console.log(update)
     Applicant.findOneAndUpdate({_id: req.params.id}, update)            // FALTA PROBAR!!
     .then(oldDoc => res.send("updated doc to:"+ "was before:" + oldDoc))
     .catch(err => res.status(500).json("Error" + err));

@@ -8,7 +8,7 @@ const applicantSchema = new Schema(
         oprojectid: { type: Schema.Types.ObjectId, ref: "Oproject", required: true},
         motive: {type: String, required:true},
         status: {type: String, enum: ["Pending", "Accepted", "Unaccepted"], default: "Pending"},
-        // date: {type: Date, required:true}
+        created: {type: Date, default: Date.now()}
     }
 )
 
