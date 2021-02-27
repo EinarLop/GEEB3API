@@ -131,33 +131,38 @@ exports.getMine = function (req, res) {
 exports.update = async function (req, res) {
   // Option to use findOneAndUpdate (atomic transaction) or save (easier to read, but is not atomic, involves findOne+updateOne);
   const {fullname, email, bio, college, major, semester, links, mastered, learning, want} = req.body;
-  const user_id = req.params.id;
-  console.log("Updating user:", user_id);
-  const userDoc = await User.findOne(user_id);
-  if (userDoc) {
-    userDoc.fullname = fullname;
-    userDoc.email = email;
-    userDoc.bio = bio;
-    userDoc.college = college;
-    userDoc.major = major;
-    userdoc.semester = semester;
-    userDoc.links = links;
-    userDoc.mastered = mastered;
-    userDoc.learning = learning;
-    userDoc.want = want;
-
-    userDoc.save(). then(updatedDoc => {
-      console.log("Update result:");
-      console.log(updatedDoc);
-      res.send("Succesfully updated user: " + updatedDoc.fullname + " (" + updatedDoc._id + ")");
-    }).catch(err => {
-      console.log("Error updating:", err);
-      res.status(500).json("Error updating:", err);
-    });
-
-  } else {
-    console.log("No such user id found!");
-    res.send("No such user id found!");
+  const userId = req.params.id;
+  console.log("Updating user:", userId);
+  try {
+    const userDoc = await User.findById(userId);
+    if (userDoc) {
+      userDoc.fullname = fullname;
+      userDoc.email = email;
+      userDoc.bio = bio;
+      userDoc.college = college;
+      userDoc.major = major;
+      userDoc.semester = semester;
+      userDoc.links = links;
+      userDoc.mastered = mastered;
+      userDoc.learning = learning;
+      userDoc.want = want;
+  
+      userDoc.save(). then(updatedDoc => {
+        console.log("Update result:");
+        console.log(updatedDoc);
+        res.send("Succesfully updated user: " + updatedDoc.fullname + " (" + updatedDoc._id + ")");
+      }).catch(err => {
+        console.log("Error updating:", err);
+        res.status(500).json("Error updating:", err);
+      });
+  
+    } else {
+      console.log("No such user id found!");
+      res.status(400).send("No such user id found!");
+    }
+    
+  } catch (err) {
+    console.log("Mongoose Error:", err);
   }
 
 };
