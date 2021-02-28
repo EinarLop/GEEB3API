@@ -45,7 +45,7 @@ const userSchema = new Schema({
 });
 
 function validEmail(email) {
-  let re = "/^w+([.-]?w+)*@w+([.-]?w+)*(.w{2,3})+$/";
+  let re = /\S+@\S+\.\S+/;
   return re.test(email);
 }
 
