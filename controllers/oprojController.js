@@ -183,6 +183,7 @@ exports.getByUser = function (req, res) {
 
 exports.getMine = function (req, res) {
   Oproject.find({ userid: mongoose.Types.ObjectId(req.user.userId) })
+    .populate("userid")
     .then((projects) => res.json(projects))
     .catch((err) => res.status(500).json("Error" + err));
 };

@@ -55,20 +55,9 @@ exports.register = async function (req, res) {
   // Verify email not taken
   const emailExists = await User.findOne({ email: req.body.email });
   if (emailExists) return res.status(400).send("Email already exists");
-
   //Joi Validation ?
   const username = req.body.username;
   const email = req.body.email;
-  const fullname = req.body.fullname;
-  const university = req.body.university;
-  const semester = req.body.semester;
-  const major = req.body.major;
-  const bio = req.body.bio;
-  const links = req.body.links;
-  const mastered = req.body.mastered;
-  const learning = req.body.learning;
-  const want = req.body.want;
-
   const salt = await bcrypt.genSalt(10);
   const password = await bcrypt.hash(req.body.password, salt);
 
@@ -76,17 +65,7 @@ exports.register = async function (req, res) {
     username,
     email,
     password,
-    fullname,
-    university,
-    semester,
-    major,
-    bio,
-    links,
-    mastered,
-    learning,
-    want,
   });
-
   user
     .save()
     .then((newDoc) => res.json("User succesfully added!" + newDoc))
