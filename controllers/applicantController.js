@@ -36,7 +36,7 @@ exports.create = function (req, res) {
 };
 
 exports.getAll = function (req, res) {
-    Applicant.find()
+    Applicant.find().populate('userid')
       .then((applicants) => res.json(applicants))
       .catch((err) => res.status(500).json("Error: " + err));
 };
@@ -75,14 +75,36 @@ exports.getOne = function (req, res) {
   
   
 exports.getByUser = function(req, res) {      // works well
-    console.log(req.params.userid)
-    Applicant.find({userid: mongoose.Types.ObjectId(req.params.userid)})
-    .then(applications => res.json(applications))
+    //console.log(req.params.userid)
+    const token = req.header("auth-token");
+    const profile=mongoose.Types.ObjectId(req.params.userid);
+    Applicant.find({userid: profile})
+    .populate('oprojectid')
+    .then((applications) => {
+      let visitorIsOwner = false;
+      if (typeof(token) != 'undefined') {
+        try {
+          const verified = jwt.verify(token, secret);
+          let visitor = new ObjectID(verified.userId);
+          if (profile.equals(visitor)){
+            visitorIsOwner = true;
+          }
+        } catch (err) {
+          console.log("Bad token: " + err)
+        }
+      }
+      const response = {
+        applications: applications,
+        isOwner: visitorIsOwner
+      }
+      res.json(response);
+    })
     .catch(err => res.status(500).json("Error" + err));
 }
 
 exports.getByProject = function(req, res) {      // works well
     Applicant.find({oprojectid: mongoose.Types.ObjectId(req.params.oprojectid)})
+    .populate('userid')
     .then(applications => res.json(applications))
     .catch(err => res.status(500).json("Error" + err));
 }

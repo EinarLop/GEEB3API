@@ -6,6 +6,7 @@ require("dotenv").config(); // to load the values specified in .env
 const port = process.env.PORT || 3010;
 const app = express();
 
+
 app.use(express.json());
 app.use(cors({
   origin: ['https://geeb-3.vercel.app', "http://localhost:3000"],
