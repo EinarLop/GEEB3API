@@ -5,9 +5,8 @@ const jwt = require('jsonwebtoken');
 const ObjectID = require('mongoose').mongo.ObjectID;
 require('dotenv').config();
 
-// Nombres Geeb Projects
-// Cloud provider
-// Agregar a repo
+let secret = process.env.TOKENSECRET;
+
 exports.create = async function (req, res) {
   console.log("Creating a project...");
   const title = req.body.title;
@@ -82,7 +81,7 @@ exports.getAll = function (req, res) {
 
 exports.getOne = function (req, res) {
   const token = req.header("auth-token");
-  Sproject.findById(req.params.id)
+  Sproject.findById(req.params.id).populate('userid')
   .then((sproject) => {
 
     let visitorIsOwner = false;
