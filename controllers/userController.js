@@ -7,18 +7,18 @@ const SECRET = process.env.TOKENSECRET;
 const ObjectID = require("mongoose").mongo.ObjectID;
 
 // Route callback definitions
-
 // GET actions
+
 exports.getAll = function (req, res) {
   res.send("List of all users here");
 };
 
 exports.getOne = function (req, res) {
-  const token = req.header("auth-token");   // returns string 'null' if not found;
+  const token = req.header("auth-token"); // returns string 'null' if not found;
   User.findById(req.params.id)
     .then((user) => {
       let visitorIsOwner = false;
-      if (token!=="null") {
+      if (token !== "null") {
         try {
           const verified = jwt.verify(token, SECRET);
           console.log("JWT verification:");
@@ -143,7 +143,6 @@ exports.update = async function (req, res) {
   } catch (err) {
     console.log("Mongoose Error:", err);
   }
-
 };
 
 exports.delete = function (req, res) {
