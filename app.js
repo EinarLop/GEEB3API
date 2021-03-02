@@ -20,6 +20,7 @@ const sprojectsRouter = require("./routes/sprojects");
 const usersRouter = require("./routes/users");
 const tagsRouter = require("./routes/tags");
 const applicantsRouter = require("./routes/applicants");
+const feedbackRouter = require("./routes/feedback");
 
 const skillsRouter = require("./routes/skills");
 
@@ -46,5 +47,6 @@ app.use("/users", usersRouter);
 app.use("/tags", tagsRouter);
 app.use("/skills", skillsRouter);
 app.use("/applicants", applicantsRouter);
+app.use("/feedback", feedbackRouter);
 
 app.listen(port, () => console.log("Express server up and running: " + port));
