@@ -1,16 +1,23 @@
+/* PREFIX '/tags' */
+
 const express = require("express");
 const router = express.Router();
-const tag = require("../controllers/tagController");
+const Tag = require("../controllers/tagController");
 
-//   Prefix     '/tags'
 
 // MVP
-router.post("/create", tag.create);
-router.get("/", tag.getAll);
-router.get("/:id", tag.getOne);
+router.post("/create", Tag.create);
+router.get("/", Tag.getAll);
+router.get("/oprojects", Tag.getOProjectsWithTags);
 
-// Extras
-router.post("/delete/:id", tag.delete);
-router.patch("/update/:id", tag.update);
-router.post("/deleteAll", tag.deleteAll);
+
+
+router.post("/delete/:id", Tag.delete);
+router.patch("/update/:id", Tag.update);
+router.post("/deleteAll", Tag.deleteAll);
+
+
+router.get("/:id", Tag.getOne);
+
+
 module.exports = router;
