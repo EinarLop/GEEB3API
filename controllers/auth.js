@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
+const admin = require('../firebase/admin');
 
 let secret = process.env.TOKENSECRET
 
@@ -25,7 +26,22 @@ module.exports = function MongoAuth(req, res, next) {
   }
 }
 
-module.exports = function FirebaseAuth(req, res, next) {
-  //
-  return;
+module.exports = async function FirebaseAuth(req, res, next) {
+
+  const authHeader = req.headers.authorization.split(' ');
+  if (authHeader[0] !== 'Bearer') {
+    return res.status(400).send("Auth Header badly formatted");
+  }
+
+  const idToken = authHeader[1];
+
+  try {
+    const decodedToken = await admin.auth().verifyIdToken(idToken);
+    const uid = decodedToken.uid;
+    console.log("Succesful token verification");
+    console.log("with uid:", uid);
+  } catch (error) {
+    console.log("Token verification error", error);
+  }
+  next();
 }
