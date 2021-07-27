@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const admin = require('firebase-admin');
+const admin = require('./firebase/admin');
 require("dotenv").config(); // to load the values specified in .env
 
 const port = process.env.PORT || 3010;
@@ -21,16 +21,14 @@ const usersRouter = require("./routes/users");
 const tagsRouter = require("./routes/tags");
 const applicantsRouter = require("./routes/applicants");
 const feedbackRouter = require("./routes/feedback");
-
 const skillsRouter = require("./routes/skills");
 
-const uri = process.env.CONNECTIONSTRING;
-
+const URI = process.env.CONNECTIONSTRING;
 
 // Mongoose Setup
 
 const mongoose = require("mongoose");
-mongoose.connect(uri, {
+mongoose.connect(URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useCreateIndex: true,
