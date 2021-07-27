@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
+const admin = require('firebase-admin');
 require("dotenv").config(); // to load the values specified in .env
- // to load the values specified in .env
 
 const port = process.env.PORT || 3010;
 const app = express();
@@ -12,7 +12,7 @@ app.use(cors({
   origin: ['https://geeb-3.vercel.app', "http://localhost:3000"],
   exposedHeaders: 'auth-token',
   credentials: true     // so that cookie is received by front
-  }));
+}));
 // Require Router modules
 const indexRouter = require("./routes/index");
 const oprojectsRouter = require("./routes/oprojects");

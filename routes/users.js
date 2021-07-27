@@ -12,7 +12,7 @@ router.post("/login", user.login);
 router.get("/", user.getAll); // fetch all users data
 
 //Extras
-router.put("/update/:id", auth, user.update);
+router.put("/update/:id", user.update);
 router.get("/delete/:id", user.delete);
 router.get("/:id", user.getOne);
 // router.get("/test", auth, user.getMine);
