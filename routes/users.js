@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const user = require("../controllers/userController");
-const FirebaseAuth = require("../controllers/auth.js");
+const auth = require("../controllers/auth.js");
 
 /* PREFIX /users/ */
 
@@ -10,15 +10,17 @@ const FirebaseAuth = require("../controllers/auth.js");
 router.post("/register", user.register);
 router.post("/login", user.login);
 router.get("/", user.getAll); // fetch all users data
-router.get("/private", FirebaseAuth, (req, res) => {
-    res.status(200).send("You're good to go");
+router.get("/private", auth, (req, res) => {
+    console.log("Received from Auth credentials:", res.locals.uid);
+    res.status(200).send("You're good to go", res.locals.uid);
 });
 
-//Extras
-router.put("/update/:id", user.update);
-router.get("/delete/:id", user.delete);
+
+router.put("/update/:id", auth, user.update);
+router.get("/delete/:id", auth, user.delete);
+
+
 router.get("/:id", user.getOne);
-// router.get("/test", auth, user.getMine);
 
 
 module.exports = router;

@@ -6,10 +6,11 @@ const skill = require("../controllers/skillController");
 router.post("/create", skill.create);
 router.get("/", skill.getAll);
 
-router.patch("/update/:id", skill.update);      
+router.patch("/update/:id", skill.update);
 
 router.post("/delete/:id", skill.delete);
 router.post("/deleteAll", skill.deleteAll);
 
 router.get("/:id", skill.getOne);
+
 module.exports = router;

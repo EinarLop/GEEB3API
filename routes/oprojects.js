@@ -2,7 +2,6 @@
 const express = require("express");
 const router = express.Router();
 
-// CONTROLLERS
 const oproject = require("../controllers/oprojController");
 const auth = require('../controllers/auth.js');
 
@@ -29,9 +28,8 @@ router.post("delete/:id", auth, oproject.delete);
 // Create one project
 router.post("/create", auth, oproject.create);
 
-// Get Self-owned projects
+// Get my own Oprojects
 router.get("/mine", auth, oproject.getMine);
-
 
 router.post("/deleteAll", oproject.deleteAll);      // TESTING PURPOSES ONLY
 

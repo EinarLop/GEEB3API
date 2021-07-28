@@ -2,6 +2,8 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const admin = require('../firebase/admin');
 
+
+/* 
 let secret = process.env.TOKENSECRET
 
 module.exports = function MongoAuth(req, res, next) {
@@ -24,24 +26,32 @@ module.exports = function MongoAuth(req, res, next) {
     console.log("Bad token")
     return res.status(400).send("Invalid token");
   }
-}
+} */
 
-module.exports = async function FirebaseAuth(req, res, next) {
+module.exports = async function auth(req, res, next) {
 
   const authHeader = req.headers.authorization.split(' ');
-  if (authHeader[0] !== 'Bearer') {
-    return res.status(400).send("Auth Header badly formatted");
+  if (authHeader[0] !== 'Bearer' || authHeader.length != 2) {
+    return res.status(400).json("Auth Header badly formatted");
   }
 
-  const idToken = authHeader[1];
-
+  // Verify client's firebase auth Token
   try {
+    const idToken = authHeader[1];
     const decodedToken = await admin.auth().verifyIdToken(idToken);
     const uid = decodedToken.uid;
-    console.log("Succesful token verification");
-    console.log("with uid:", uid);
+
+    res.locals.uid = uid;
+
+    console.log("Succesfully Authenticated User:");
+    console.dir(decodedToken);
+
   } catch (error) {
-    console.log("Token verification error", error);
+
+    console.log("Error while verifying:", error);
+    res.status(401).json("Authentication Failed:", error);
+
   }
+
   next();
 }
