@@ -6,15 +6,55 @@ require("dotenv").config();
 const SECRET = process.env.TOKENSECRET;
 const ObjectID = require("mongoose").mongo.ObjectID;
 
-// Route callback definitions
-// GET actions
 
-exports.getAll = function (req, res) {
-  res.send("List of all users here");
+exports.getAll = async function (req, res) {
+  const allUsers = await User.find();
+
+  res.status(500).json(allUsers);
 };
 
+
+exports.getByEmail = async function (req, res) {
+
+  const email = req.body.email;
+  console.log("Find user by email", email);
+
+  if (!email) {
+    res.status(400).json("No email in request body");
+  }
+
+  const userDoc = await User.find({ email: email });
+  if (!userDoc) {
+    res.status(404).json("Requested email was not found");
+  }
+
+  // to verify isOwner, client compares route 'profile/:id' with userDoc.username
+  console.log("Return:", userDoc[0])
+  res.status(200).json(userDoc[0]);
+}
+
+exports.getByUsername = async function (req, res) {
+  const username = req.body.username;
+
+  if (!username) {
+    res.status(400).json("No username in request body");
+  }
+
+  const userDoc = await User.find({ username: username });
+
+  res.status(200).json(userDoc);
+}
+
+exports.updateUser = async function (req, res) {
+  // should verify that idToken email equals requested email
+  res.status(500).json("NOT YET IMPLEMENTED");
+}
+
+
+// LEGACY
 exports.getOne = function (req, res) {
   const token = req.header("auth-token"); // returns string 'null' if not found;
+
   User.findById(req.params.id)
     .then((user) => {
       let visitorIsOwner = false;
@@ -109,7 +149,7 @@ exports.getMine = function (req, res) {
 
 exports.update = async function (req, res) {
   // Option to use findOneAndUpdate (atomic transaction) or save (easier to read, but is not atomic, involves findOne+updateOne);
-  const {fullname, email, bio, college, major, semester, links, mastered, learning, want} = req.body;
+  const { fullname, email, bio, college, major, semester, links, mastered, learning, want } = req.body;
   const userId = req.params.id;
   console.log("Updating user:", userId);
   try {
@@ -125,8 +165,8 @@ exports.update = async function (req, res) {
       userDoc.mastered = mastered;
       userDoc.learning = learning;
       userDoc.want = want;
-  
-      userDoc.save(). then(updatedDoc => {
+
+      userDoc.save().then(updatedDoc => {
         console.log("Update result:");
         console.log(updatedDoc);
         res.send("Succesfully updated user: " + updatedDoc.fullname + " (" + updatedDoc._id + ")");
@@ -134,12 +174,12 @@ exports.update = async function (req, res) {
         console.log("Error updating:", err);
         res.status(500).json("Error updating:", err);
       });
-  
+
     } else {
       console.log("No such user id found!");
       res.status(400).send("No such user id found!");
     }
-    
+
   } catch (err) {
     console.log("Mongoose Error:", err);
   }
