@@ -15,7 +15,6 @@ exports.getAll = async function (req, res) {
 
 
 exports.getByEmail = async function (req, res) {
-
   const email = req.body.email;
   console.log("Find user by email", email);
 
@@ -23,14 +22,13 @@ exports.getByEmail = async function (req, res) {
     res.status(400).json("No email in request body");
   }
 
-  const userDoc = await User.find({ email: email });
+  const userDoc = await User.findOne({ email: email });
   if (!userDoc) {
     res.status(404).json("Requested email was not found");
   }
 
-  // to verify isOwner, client compares route 'profile/:id' with userDoc.username
-  console.log("Return:", userDoc[0])
-  res.status(200).json(userDoc[0]);
+  console.log("Return:", userDoc)
+  res.status(200).json(userDoc);
 }
 
 exports.getByUsername = async function (req, res) {
@@ -45,13 +43,84 @@ exports.getByUsername = async function (req, res) {
   res.status(200).json(userDoc);
 }
 
-exports.updateUser = async function (req, res) {
-  // should verify that idToken email equals requested email
-  res.status(500).json("NOT YET IMPLEMENTED");
+exports.update = async function (req, res) {
+  // verify that idToken email equals requested email
+  const authEmail = res.locals.decodedEmail;
+  const userEmail = req.params.id;
+
+  if (authEmail !== userEmail) {
+    res.status(401).json(`User ${authEmail} does not have authorization to update ${userEmail}`)
+  }
+
+  const userDoc = null;
+
+  try {
+    userDoc = await User.findOne({ email: userEmail });
+
+  } catch (error) {
+    res.status(404).json("Error finding user", userEmail);
+  }
+
+  if (userDoc) {
+
+    const { fullname, email, bio, college, major, semester, links, mastered, learning, want } = req.body;
+
+    userDoc.fullname = fullname;
+    userDoc.email = email;
+    userDoc.bio = bio;
+    userDoc.college = college;
+    userDoc.major = major;
+    userDoc.semester = semester;
+    userDoc.links = links;
+    userDoc.mastered = mastered;
+    userDoc.learning = learning;
+    userDoc.want = want;
+
+    try {
+      const updatedDoc = await userDoc.save();
+
+      console.log("updated user document:");
+      console.log(updatedDoc);
+      res.send("Succesfully updated:" + updatedDoc.fullname + "(email " + updatedDoc.email + ")");
+
+    } catch (err) {
+      res.status(500).json("Error updating:", err);
+    }
+
+
+  } else {
+    res.status(404).json(`Requested User was not found`);
+  }
+
 }
 
+exports.register = async function (req, res) {
+  console.log("Creating a user...");
+  console.log(req.body);
 
-// LEGACY
+  const userExists = await User.findOne({ username: req.body.username });
+  if (userExists) return res.status(400).send("Username already exists");
+
+  const emailExists = await User.findOne({ email: req.body.email });
+  if (emailExists) return res.status(400).send("Email already exists");
+
+  const username = req.body.username;
+  const email = req.body.email;
+
+  const user = new User({
+    username,
+    email,
+  });
+
+  user
+    .save()
+    .then((newDoc) => res.json("User succesfully added!" + newDoc))
+    .catch((err) => res.status(400).json("Error:" + err));
+};
+
+
+
+// LEGACY --- DO NOT USE
 exports.getOne = function (req, res) {
   const token = req.header("auth-token"); // returns string 'null' if not found;
 
@@ -84,34 +153,6 @@ exports.getOne = function (req, res) {
     });
 };
 
-// POST actions
-exports.register = async function (req, res) {
-  console.log("Creating a user...");
-  console.log(req.body);
-  // Verify username not taken
-  const userExists = await User.findOne({ username: req.body.username });
-  if (userExists) return res.status(400).send("Username already exists");
-
-  // Verify email not taken
-  const emailExists = await User.findOne({ email: req.body.email });
-  if (emailExists) return res.status(400).send("Email already exists");
-  //Joi Validation ?
-  const username = req.body.username;
-  const email = req.body.email;
-  const salt = await bcrypt.genSalt(10);
-  const password = await bcrypt.hash(req.body.password, salt);
-
-  var user = new User({
-    username,
-    email,
-    password,
-  });
-  user
-    .save()
-    .then((newDoc) => res.json("User succesfully added!" + newDoc))
-    .catch((err) => res.status(400).json("Error:" + err));
-};
-
 exports.login = async function (req, res) {
   console.log(req.body);
   // Verify user exists
@@ -135,19 +176,8 @@ exports.login = async function (req, res) {
   }
 };
 
-exports.getMine = function (req, res) {
-  //const userid = mongoose.Types.ObjectId(req.user.userId);
-  let userid = new ObjectID(req.user.userId);
-  console.log(userId);
 
-  User.findById(userid)
-    .then((user) => {
-      res.json(user);
-    })
-    .catch((err) => res.status(500).json("Error: " + err));
-};
-
-exports.update = async function (req, res) {
+exports._update = async function (req, res) {
   // Option to use findOneAndUpdate (atomic transaction) or save (easier to read, but is not atomic, involves findOne+updateOne);
   const { fullname, email, bio, college, major, semester, links, mastered, learning, want } = req.body;
   const userId = req.params.id;
