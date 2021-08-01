@@ -134,7 +134,7 @@ exports.register = async function (req, res) {
 
 
 exports.getEmailFromUsername = function (req, res) {
-  const requestedUsername = req.body.username;
+  const requestedUsername = req.params.username;
   if (!requestedUsername) {
     res.status(400).json("No username in request body");
   }
