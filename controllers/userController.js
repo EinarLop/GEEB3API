@@ -98,11 +98,22 @@ exports.register = async function (req, res) {
   console.log("Creating a user...");
   console.log(req.body);
 
-  const userExists = await User.findOne({ username: req.body.username });
-  if (userExists) return res.status(400).send("Username already exists");
+  try {
+    const userExists = await User.findOne({ username: req.body.username });
+    if (userExists) {
+      console.log("Username taken");
+      return res.status(400).json("Username already exists");
+    }
+    const emailExists = await User.findOne({ email: req.body.email });
+    if (emailExists) {
+      console.log("Email taken");
+      return res.status(400).json("Email already exists");
+    }
 
-  const emailExists = await User.findOne({ email: req.body.email });
-  if (emailExists) return res.status(400).send("Email already exists");
+  } catch (error) {
+    console.error("Something bad happened");
+    res.status(500).json("Something happened:" + error);
+  }
 
   const username = req.body.username;
   const email = req.body.email;
@@ -115,7 +126,10 @@ exports.register = async function (req, res) {
   user
     .save()
     .then((newDoc) => res.json("User succesfully added!" + newDoc))
-    .catch((err) => res.status(400).json("Error:" + err));
+    .catch((err) => {
+      console.log("Error on user save", err);
+      res.status(500).json(err)
+    });
 };
 
 
@@ -167,12 +181,7 @@ exports.login = async function (req, res) {
   if (!validPass) return res.status(400).send("Username/password is wrong");
   else {
     const token = jwt.sign({ userId: userExists._id }, SECRET);
-    res.header("auth-token", token).json({ userId: userExists._id }); // also send the user id. for localstorage
-    // res.cookie("JWT", token, {    // token is saved to a cookie and sent back to client
-    //   domain: '.geeb-3.vercel.app',
-    //   maxAge: 86_400_000,
-    // });
-    //res.send("Login succesful. Welcome, " + userExists.username);
+    res.header("auth-token", token).json({ userId: userExists._id });
   }
 };
 
