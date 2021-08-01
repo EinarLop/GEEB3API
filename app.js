@@ -1,18 +1,19 @@
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config(); // to load the values specified in .env
- // to load the values specified in .env
+// to load the values specified in .env
 
 const port = process.env.PORT || 3010;
 const app = express();
 
-
 app.use(express.json());
-app.use(cors({
-  origin: ['https://geeb-3.vercel.app', "http://localhost:3000"],
-  exposedHeaders: 'auth-token',
-  credentials: true     // so that cookie is received by front
-  }));
+app.use(
+  cors({
+    origin: ["https://geeb-3.vercel.app", "http://localhost:3000"],
+    exposedHeaders: "auth-token",
+    credentials: true, // so that cookie is received by front
+  })
+);
 // Require Router modules
 const indexRouter = require("./routes/index");
 const oprojectsRouter = require("./routes/oprojects");
@@ -20,11 +21,11 @@ const sprojectsRouter = require("./routes/sprojects");
 const usersRouter = require("./routes/users");
 const tagsRouter = require("./routes/tags");
 const applicantsRouter = require("./routes/applicants");
+const emailRouter = require("./routes/email");
 
 const skillsRouter = require("./routes/skills");
 
 const uri = process.env.CONNECTIONSTRING;
-
 
 // Mongoose Setup
 
@@ -46,5 +47,6 @@ app.use("/users", usersRouter);
 app.use("/tags", tagsRouter);
 app.use("/skills", skillsRouter);
 app.use("/applicants", applicantsRouter);
+app.use("/email", emailRouter);
 
 app.listen(port, () => console.log("Express server up and running: " + port));

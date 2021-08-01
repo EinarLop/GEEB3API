@@ -4,6 +4,7 @@
   "description": "development backend server for geeb3",
   "main": "app.js",
   "dependencies": {
+    "@sendgrid/mail": "^7.4.5",
     "async": "^3.2.0",
     "axios": "^0.21.1",
     "bcrypt": "^5.0.0",
