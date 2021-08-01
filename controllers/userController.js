@@ -133,6 +133,21 @@ exports.register = async function (req, res) {
 };
 
 
+exports.getEmailFromUsername = function (req, res) {
+  const requestedUsername = req.body.username;
+  if (!requestedUsername) {
+    res.status(400).json("No username in request body");
+  }
+
+  const userEmail = User.findOne({ username: requestedUsername }, { email: 1 });
+  console.log("user email", userEmail);
+
+  res.status(200).send(userEmail);
+}
+
+
+
+
 
 // LEGACY --- DO **NOT** USE
 exports.getOne = function (req, res) {
@@ -167,6 +182,7 @@ exports.getOne = function (req, res) {
     });
 };
 
+// LEGACY --- DO **NOT** USE
 exports.login = async function (req, res) {
   console.log(req.body);
   // Verify user exists
