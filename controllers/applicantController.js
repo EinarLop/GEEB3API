@@ -6,6 +6,8 @@ const ObjectID = require("mongoose").mongo.ObjectID;
 require("dotenv").config();
 let secret = process.env.TOKENSECRET;
 
+
+// LEGACY --- DO **NOT** USE
 exports.create = function (req, res) {
   let userid;
   const oprojectid = req.body.oprojectid;
@@ -73,7 +75,7 @@ exports.getOne = function (req, res) {
     .catch((err) => res.status(500).json("Error: " + err));
 };
 
-
+// LEGACY --- DO **NOT** USE
 exports.getByUser = function (req, res) {      // works well
   //console.log(req.params.userid)
   const token = req.header("auth-token");

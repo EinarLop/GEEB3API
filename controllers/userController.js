@@ -134,7 +134,7 @@ exports.register = async function (req, res) {
 
 
 
-// LEGACY --- DO NOT USE
+// LEGACY --- DO **NOT** USE
 exports.getOne = function (req, res) {
   const token = req.header("auth-token"); // returns string 'null' if not found;
 
