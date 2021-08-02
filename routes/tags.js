@@ -9,7 +9,7 @@ const Tag = require("../controllers/tagController");
 router.post("/create", Tag.create);
 router.get("/", Tag.getAll);
 router.get("/oprojects", Tag.getOProjectsWithTags);
-
+router.get("/sprojects", Tag.getSProjectsWithTags);
 
 
 router.post("/delete/:id", Tag.delete);

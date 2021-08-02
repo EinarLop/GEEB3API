@@ -48,9 +48,8 @@ exports.deleteAll = function (req, res) {
 
 exports.getOProjectsWithTags = function (req, res) {
   // Fetch the list of oproject Ids given the tag name
-  const tagNames = req.body.tagNames; // array
+  const tagNames = req.query.tagNames; // array
   console.log(tagNames, tagNames instanceof Array);
-
   // Find the tag with name: tagName
   Tag.find({ name: { $in: tagNames } }).select('oprojects').populate('oprojects')
     .then((results) => {
@@ -59,12 +58,38 @@ exports.getOProjectsWithTags = function (req, res) {
 
       results.forEach((doc) => {
         let arr = doc['oprojects']
-        arr.forEach(doc => {
-          oprojects.push(doc._doc);
+        arr.forEach(oproject => {
+          oprojects.push(oproject._doc);
         })
       })
 
       res.status(200).json(oprojects);
+
+    }).catch(error => {
+      console.log(error);
+      res.status(500).send(error);
+    });
+
+}
+
+exports.getSProjectsWithTags = function (req, res) {
+  // Fetch the list of oproject Ids given the tag name
+  const tagNames = req.query.tagNames; // array
+  console.log(tagNames, tagNames instanceof Array);
+  // Find the tag with name: tagName
+  Tag.find({ name: { $in: tagNames } }).select('sprojects').populate('sprojects')
+    .then((results) => {
+
+      let sprojects = []
+
+      results.forEach((doc) => {
+        let arr = doc['oprojects']
+        arr.forEach(sproject => {
+          sprojects.push(sproject._doc);
+        })
+      })
+
+      res.status(200).json(sprojects);
 
     }).catch(error => {
       console.log(error);
