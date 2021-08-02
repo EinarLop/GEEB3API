@@ -14,7 +14,7 @@ exports.getAll = async function (req, res) {
 };
 
 
-exports.getByEmail = async function (req, res) {
+exports.findByEmail = async function (req, res) {
   const email = req.body.email;
   console.log("Find user by email", email);
 
@@ -31,7 +31,7 @@ exports.getByEmail = async function (req, res) {
   res.status(200).json(userDoc);
 }
 
-exports.getByUsername = async function (req, res) {
+exports.findByUsername = async function (req, res) {
   const username = req.body.username;
 
   if (!username) {
@@ -133,16 +133,27 @@ exports.register = async function (req, res) {
 };
 
 
-exports.getEmailFromUsername = function (req, res) {
+exports.getEmailFromUsername = async function (req, res) {
+  console.log("Get Email From Username");
   const requestedUsername = req.params.username;
+  console.log("Request:", requestedUsername);
   if (!requestedUsername) {
     res.status(400).json("No username in request body");
   }
 
-  const userEmail = User.findOne({ username: requestedUsername }, { email: 1 });
-  console.log("user email", userEmail);
+  try {
+    const userEmail = await User.findOne({ username: requestedUsername }, 'email');
 
-  res.status(200).send(userEmail);
+    console.log("User email", userEmail);
+
+    res.status(200).send(userEmail);
+
+  } catch (error) {
+    console.log("Something happened:", error);
+    res.status(500).json(error);
+  }
+
+
 }
 
 

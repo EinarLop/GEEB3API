@@ -13,7 +13,8 @@ router.get("/private", auth, (req, res) => {
     res.status(200).json("You're good to go");
 });
 
-router.post("/by-email", user.getByEmail);
+router.post("/by-email", user.findByEmail);
+
 router.post("/register", user.register);
 
 router.put("/update/:id", auth, user.update);
