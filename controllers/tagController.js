@@ -1,8 +1,10 @@
 const Tag = require("../models/tag");
 
-// GET actions
+
 exports.getAll = function (req, res) {
-  // fecth all tags from db
+  Tag.find()
+    .then((tags) => res.json(tags))
+    .catch((err) => res.status(500).json("Error: " + err));
 };
 
 exports.getOne = function (req, res) {
