@@ -147,6 +147,8 @@ exports.deleteAll = function (req, res) {
     });
 };
 
+
+// LEGACY --- DO **NOT** USE
 exports.getOne = function (req, res) {
   const token = req.header("auth-token");
   Oproject.findById(req.params.id).populate('userid')

@@ -14,7 +14,7 @@ exports.create = async function (req, res) {
   const links = req.body.links;
   const imageurls = req.body.imageurls;
   const tags = req.body.tags;
-  
+
   var sproject = new Sproject({
     title,
     description,
@@ -79,30 +79,31 @@ exports.getAll = function (req, res) {
     .catch((err) => res.status(500).json("Error: " + err));
 };
 
+// LEGACY --- DO **NOT** USE
 exports.getOne = function (req, res) {
   const token = req.header("auth-token");
   Sproject.findById(req.params.id).populate('userid')
-  .then((sproject) => {
+    .then((sproject) => {
 
-    let visitorIsOwner = false;
-    if (typeof(token) != 'undefined') {
-      try {
-        const verified = jwt.verify(token, secret);
-        let visitor = new ObjectID(verified.userId);
-        if (sproject.userid.equals(visitor)){
-          visitorIsOwner = true;
+      let visitorIsOwner = false;
+      if (typeof (token) != 'undefined') {
+        try {
+          const verified = jwt.verify(token, secret);
+          let visitor = new ObjectID(verified.userId);
+          if (sproject.userid.equals(visitor)) {
+            visitorIsOwner = true;
+          }
+        } catch (err) {
+          console.log("Bad token: " + err)
         }
-      } catch (err) {
-        console.log("Bad token: " + err)
       }
-    }
-    const response = {
-      project: sproject,
-      isOwner: visitorIsOwner
-    }
-    res.json(response);   //in the front-end we must access response.data
-  })
-  .catch((err) => res.status(500).json("Error: " + err));
+      const response = {
+        project: sproject,
+        isOwner: visitorIsOwner
+      }
+      res.json(response);   //in the front-end we must access response.data
+    })
+    .catch((err) => res.status(500).json("Error: " + err));
 
 };
 

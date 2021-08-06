@@ -18,8 +18,7 @@ const userSchema = new Schema({
     required: true,
     validate: [validEmail, "Not a valid email"],
   },
-  password: { type: String, required: true },
-  fullname: String,
+  fullname: { type: String, maxlength: 40, default: "" },
   college: {
     type: String,
     enum: [
@@ -37,11 +36,11 @@ const userSchema = new Schema({
   },
   semester: Number,
   major: String,
-  bio: { type: String, maxlength: 400, default:"Hello! I am new to GEEB."},
+  bio: { type: String, maxlength: 400, default: "Hello! I am new to GEEB." },
   links: [String],
-  mastered: {type: [String], validate: [arrLimit, "Exceeds size limit"]},
-  learning: {type: [String], validate: [arrLimit, "Exceeds size limit"]},
-  want: {type: [String], validate: [arrLimit, "Exceeds size limit"]},
+  mastered: { type: [String], validate: [arrLimit, "Exceeds size limit"] },
+  learning: { type: [String], validate: [arrLimit, "Exceeds size limit"] },
+  want: { type: [String], validate: [arrLimit, "Exceeds size limit"] },
 });
 
 function validEmail(email) {
