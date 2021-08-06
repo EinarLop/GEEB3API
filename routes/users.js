@@ -9,7 +9,7 @@ const auth = require("../controllers/auth.js");
 router.get("/mail-query/:username", user.getEmailFromUsername);
 router.get("/", user.getAll);
 router.get("/private", auth, (req, res) => {
-    console.log("Received from Auth credentials:", res.locals.uid); // works!
+    console.log("Received from Auth credentials:", res.locals.decodedToken.uid); // works!
     res.status(200).json("You're good to go");
 });
 

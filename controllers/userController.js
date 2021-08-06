@@ -44,8 +44,8 @@ exports.findByUsername = async function (req, res) {
 }
 
 exports.update = async function (req, res) {
-  // verify that idToken email equals requested email
-  const authEmail = res.locals.decodedEmail;
+  // verify that idToken.email equals requested email
+  const authEmail = res.locals.decodedToken.email;
   const userEmail = req.params.id;
 
   if (authEmail !== userEmail) {
@@ -252,5 +252,5 @@ exports._update = async function (req, res) {
 };
 
 exports.delete = function (req, res) {
-  res.send("Deleting a user..." + req.params.id);
+  res.status(501).json("Deleting a user..." + req.params.id);
 };

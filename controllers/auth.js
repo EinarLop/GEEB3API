@@ -14,8 +14,7 @@ module.exports = async function auth(req, res, next) {
     const idToken = authTokenHeader[1];
     const decodedToken = await admin.auth().verifyIdToken(idToken);
 
-    res.locals.decodedEmail = decodedToken.email;
-    res.locals.decodedUid = decodedToken.uid;
+    res.locals.decodedToken = decodedToken
 
     console.log("Succesfully Authenticated User:", decodedToken.email);
 

@@ -7,24 +7,13 @@ require("dotenv").config();
 let secret = process.env.TOKENSECRET;
 
 
-// LEGACY --- DO **NOT** USE
+
 exports.create = function (req, res) {
+  // verify that idToken.email matches the applicant's email
   let userid;
   const oprojectid = req.body.oprojectid;
   const motive = req.body.motive;
-  const token = req.header("auth-token");
-  if (typeof (token) != 'undefined') {
-    try {
-      const verified = jwt.verify(token, secret);
-      console.log("JWT verified data:");
-      console.log(verified);
-      userid = mongoose.Types.ObjectId(verified.userId);
-      console.log(userid)
 
-    } catch (err) {
-      console.log("Bad token: " + err)
-    }
-  }
   var applicant = new Applicant({
     userid,
     oprojectid,
