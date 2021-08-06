@@ -51,7 +51,7 @@ exports.getOProjectsWithTags = function (req, res) {
   const tagNames = req.query.tagNames; // array
   console.log(tagNames, tagNames instanceof Array);
   // Find the tag with name: tagName
-  Tag.find({ name: { $in: tagNames } }).select('oprojects').populate('oprojects')
+  Tag.find({ name: { $in: tagNames } }).select('oprojects').populate('oprojects').populate('userid')
     .then((results) => {
 
       let oprojects = []
@@ -77,7 +77,7 @@ exports.getSProjectsWithTags = function (req, res) {
   const tagNames = req.query.tagNames; // array
   console.log(tagNames, tagNames instanceof Array);
   // Find the tag with name: tagName
-  Tag.find({ name: { $in: tagNames } }).select('sprojects').populate('sprojects')
+  Tag.find({ name: { $in: tagNames } }).select('sprojects').populate('sprojects').populate('userid')
     .then((results) => {
 
       let sprojects = []
