@@ -9,9 +9,9 @@ module.exports = async function auth(req, res, next) {
     return res.status(400).json("Auth Header badly formatted");
   }
 
-  // Verify client's firebase auth Token
   try {
     const idToken = authTokenHeader[1];
+    // Verify client's firebase auth Token
     const decodedToken = await admin.auth().verifyIdToken(idToken);
 
     res.locals.decodedToken = decodedToken
@@ -20,7 +20,7 @@ module.exports = async function auth(req, res, next) {
 
   } catch (error) {
 
-    console.log("Error while verifying:", error);
+    console.error("Error while verifying:", error);
     res.status(401).json("Authentication Failed:", error);
 
   }

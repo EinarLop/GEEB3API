@@ -1,10 +1,6 @@
 const express = require("express");
 const router = express.Router();
 
-// Require controller modules (callbacks for each data model)
-const oproject = require("../controllers/oprojController");
-const sproject = require("../controllers/sprojController");
-const skill = require("../controllers/skillController");
 
 /* Home page GET */
 router.get("/", function (req, res) {
@@ -14,7 +10,19 @@ router.get("/", function (req, res) {
 
 router.get("/about", function (req, res) {
   res.send(
-    "This is the about page. We explain what is GEEB, what it offers, and how you can use it to empower your professional career."
+    ```
+    This is the about page. We explain what how to use the GEEB3API, what it offers,\n
+    And what it can do for you as a developer.
+    \n
+    URL PATHS:
+    \t'about/users' => users tutorial\n
+    \t'about/sprojects' => sprojects tutorial\n
+    \t'about/oprojects' => oprojects tutorial\n
+    \t'about/tags' => tags tutorial\n
+    \t'about/skills' => skills tutorial\n
+    \t'about/applicants' => applicants tutorial\n
+    \t'about/feedback' => feedback comments tutorial\n
+    ```
   );
 });
 

@@ -8,6 +8,7 @@ require('dotenv').config();
 let secret = process.env.TOKENSECRET;
 
 exports.create = async function (req, res) {
+  // TODO: refactor for firebase auth
   console.log("Creating a project...");
   const title = req.body.title;
   const description = req.body.description;
