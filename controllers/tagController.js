@@ -47,10 +47,9 @@ exports.deleteAll = function (req, res) {
 
 
 exports.getOProjectsWithTags = function (req, res) {
-  // Fetch the list of oproject Ids given the tag name
+
   const tagNames = req.query.tagNames; // array
 
-  // Find the tag with name: tagName
   Tag.find({ name: { $in: tagNames } }).select('oprojects')
     .populate({
       path: 'oprojects',
@@ -81,10 +80,8 @@ exports.getOProjectsWithTags = function (req, res) {
 }
 
 exports.getSProjectsWithTags = function (req, res) {
-  // Fetch the list of oproject Ids given the tag name
   const tagNames = req.query.tagNames; // array
 
-  // Find the tag with name: tagName
   Tag.find({ name: { $in: tagNames } }).select('sprojects')
     .populate({
       path: 'sprojects',
