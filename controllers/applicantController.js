@@ -6,23 +6,14 @@ const ObjectID = require("mongoose").mongo.ObjectID;
 require("dotenv").config();
 let secret = process.env.TOKENSECRET;
 
+
+
 exports.create = function (req, res) {
+  // verify that idToken.email matches the applicant's email
   let userid;
   const oprojectid = req.body.oprojectid;
   const motive = req.body.motive;
-  const token = req.header("auth-token");
-  if (typeof (token) != 'undefined') {
-    try {
-      const verified = jwt.verify(token, secret);
-      console.log("JWT verified data:");
-      console.log(verified);
-      userid = mongoose.Types.ObjectId(verified.userId);
-      console.log(userid)
 
-    } catch (err) {
-      console.log("Bad token: " + err)
-    }
-  }
   var applicant = new Applicant({
     userid,
     oprojectid,
@@ -73,7 +64,7 @@ exports.getOne = function (req, res) {
     .catch((err) => res.status(500).json("Error: " + err));
 };
 
-
+// LEGACY --- DO **NOT** USE
 exports.getByUser = function (req, res) {      // works well
   //console.log(req.params.userid)
   const token = req.header("auth-token");
