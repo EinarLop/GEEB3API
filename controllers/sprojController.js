@@ -15,6 +15,9 @@ exports.create = async function (req, res) {
   const imageurls = req.body.imageurls;
   const tags = req.body.tags;
 
+  // All tags to lowercase
+  tags = tags.map(t => t.toLowerCase());
+
   var sproject = new Sproject({
     title,
     description,

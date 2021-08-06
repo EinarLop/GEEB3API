@@ -13,9 +13,13 @@ exports.getOne = function (req, res) {
 
 // POST actions
 exports.create = function (req, res) {
-  const name = req.body.name;
+  const name = req.body.name?.toLowerCase();
   const oprojects = req.body.oprojects;
   const sprojects = req.body.sprojects;
+
+  if (!name) {
+    res.status(400).json("No tag name in request body");
+  }
 
   let tag = new Tag({
     name,

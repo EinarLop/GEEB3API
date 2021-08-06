@@ -21,6 +21,10 @@ exports.create = function (req, res) {
   const desirables = req.body.desirables;
   const tags = req.body.tags;
   const skills = req.body.skills;
+
+  // All tags to lowercase
+  tags = tags.map(t => t.toLowerCase());
+
   /*
   {
     "title": "Geeb Project",
