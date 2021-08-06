@@ -49,15 +49,23 @@ exports.deleteAll = function (req, res) {
 exports.getOProjectsWithTags = function (req, res) {
   // Fetch the list of oproject Ids given the tag name
   const tagNames = req.query.tagNames; // array
-  console.log(tagNames, tagNames instanceof Array);
+
   // Find the tag with name: tagName
-  Tag.find({ name: { $in: tagNames } }).select('oprojects').populate('oprojects').populate('userid')
+  Tag.find({ name: { $in: tagNames } }).select('oprojects')
+    .populate({
+      path: 'oprojects',
+      populate: {
+        path: 'userid',
+      }
+    })
     .then((results) => {
 
       let oprojects = []
+      console.log("For tag names in", tagNames);
 
-      results.forEach((doc) => {
-        let arr = doc['oprojects']
+      results.forEach((tagDoc) => {
+        let arr = tagDoc['oprojects']
+
         arr.forEach(oproject => {
           oprojects.push(oproject._doc);
         })
@@ -67,7 +75,7 @@ exports.getOProjectsWithTags = function (req, res) {
 
     }).catch(error => {
       console.log(error);
-      res.status(500).send(error);
+      res.status(500).json(error);
     });
 
 }
@@ -75,15 +83,23 @@ exports.getOProjectsWithTags = function (req, res) {
 exports.getSProjectsWithTags = function (req, res) {
   // Fetch the list of oproject Ids given the tag name
   const tagNames = req.query.tagNames; // array
-  console.log(tagNames, tagNames instanceof Array);
+
   // Find the tag with name: tagName
-  Tag.find({ name: { $in: tagNames } }).select('sprojects').populate('sprojects').populate('userid')
+  Tag.find({ name: { $in: tagNames } }).select('sprojects')
+    .populate({
+      path: 'sprojects',
+      populate: {
+        path: 'userid',
+      }
+    })
     .then((results) => {
 
       let sprojects = []
+      console.log("For tag names in", tagNames);
+
 
       results.forEach((doc) => {
-        let arr = doc['oprojects']
+        let arr = doc['sprojects']
         arr.forEach(sproject => {
           sprojects.push(sproject._doc);
         })
@@ -93,7 +109,7 @@ exports.getSProjectsWithTags = function (req, res) {
 
     }).catch(error => {
       console.log(error);
-      res.status(500).send(error);
+      res.status(500).json(error);
     });
 
 }
