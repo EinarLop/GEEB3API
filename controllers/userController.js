@@ -153,6 +153,22 @@ exports.getEmailFromUsername = async function (req, res) {
   }
 }
 
+exports.getMongoID = async function (req, res) {
+  const { email } = res.locals.decodedToken;
+  console.log("Get Mondo ID from user:", email);
+
+  try {
+    const id = await User.findOne({ email: email }, '_id');
+    console.log("Resulting mongoID", id);
+    res.status(200).send(id);
+
+  } catch (error) {
+    console.error("Error fetching MongoID", error);
+    res.status(500).json(error);
+  }
+
+}
+
 
 
 exports.getOne = function (req, res) {

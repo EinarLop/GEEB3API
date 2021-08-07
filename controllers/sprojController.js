@@ -5,16 +5,16 @@ const jwt = require('jsonwebtoken');
 const ObjectID = require('mongoose').mongo.ObjectID;
 require('dotenv').config();
 
-let secret = process.env.TOKENSECRET;
 
+// Requires user's mongoID in client request
 exports.create = async function (req, res) {
-  // TODO: refactor for firebase auth
   console.log("Creating a project...");
   const title = req.body.title;
   const description = req.body.description;
   const links = req.body.links;
   const imageurls = req.body.imageurls;
   const tags = req.body.tags;
+  const userid = mongoose.Types.ObjectId(req.body.userid);
 
   // All tags to lowercase
   tags = tags.map(t => t.toLowerCase());
@@ -22,7 +22,7 @@ exports.create = async function (req, res) {
   var sproject = new Sproject({
     title,
     description,
-    userid: mongoose.Types.ObjectId(req.user.userId),
+    userid,
     links,
     imageurls,
     tags,
@@ -86,7 +86,6 @@ exports.getAll = function (req, res) {
 
 
 exports.getOne = function (req, res) {
-  console.log("Legacy get One sproject!");
   Sproject.findById(req.params.id).populate('userid')
     .then((sproject) => {
       res.json(sproject);

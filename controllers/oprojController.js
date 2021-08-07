@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
-
+// Requires user's mongoID in client request
 exports.create = function (req, res) {
   // TODO: refactor for firebase auth
   console.log(req.user); // req.user set in auth middleware
