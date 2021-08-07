@@ -4,33 +4,23 @@ const Skill = require("../models/skill");
 const async = require("async");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
-const ObjectID = require("mongoose").mongo.ObjectID;
 require("dotenv").config();
 
-let secret = process.env.TOKENSECRET;
-
-// GET actions
-// information for the object comes in req.body if we're using json
+// Requires user's mongoID in client request
 exports.create = function (req, res) {
+  // TODO: refactor for firebase auth
   console.log(req.user); // req.user set in auth middleware
   const title = req.body.title;
   const description = req.body.description;
-  const userid = mongoose.Types.ObjectId(req.user.userId); // fix userId.userId
+  const userid = mongoose.Types.ObjectId(req.user.userId);
   const status = req.body.status;
   const highlights = req.body.highlights;
   const desirables = req.body.desirables;
   const tags = req.body.tags;
   const skills = req.body.skills;
-  /*
-  {
-    "title": "Geeb Project",
-    "description": "A long-term independent networking project made with the MERN stack",
-    "highlights": ["No highlights yet"],
-    "tags": ["MERN", "Web App"],
-    "skills": ["Fullstack developer"],
-    "desirables": ["Likes programming!"]
-  }
-  */
+
+  // All tags to lowercase
+  tags = tags.map(t => t.toLowerCase());
 
   var oproject = new Oproject({
     title,
@@ -47,8 +37,9 @@ exports.create = function (req, res) {
 
   oproject.save().then((newDoc) => {
     // For every Skill & Tag, if not existing create new, else add the projectId reference.
+
     async.parallel(
-      // save Skills and Tags to database in parallel fashion
+      // save Skills and Tags to database in parallelized fashion
       {
         tags: async function (callback) {
           const oprojects = [newDoc._id];
@@ -108,7 +99,6 @@ exports.create = function (req, res) {
         console.log("Callback finished succesfully");
         console.log("New doc's id:", newDoc._id);
         res.json(newDoc._id);
-        //res.send("Created succesfully: " + results);
       }
     );
   });
@@ -137,8 +127,8 @@ exports.delete = function (req, res) {
     });
 };
 
-exports.deleteAll = function (req, res) {
-  Oproject.deleteMany({ status: "Open" })
+exports.deleteClosed = function (req, res) {
+  Oproject.deleteMany({ status: "Closed" })
     .then(function () {
       res.send("Data deleted"); // Success
     })
@@ -148,47 +138,38 @@ exports.deleteAll = function (req, res) {
 };
 
 
-// LEGACY --- DO **NOT** USE
 exports.getOne = function (req, res) {
-  const token = req.header("auth-token");
+  console.log("Get One Oproject!");
   Oproject.findById(req.params.id).populate('userid')
     .then((oproject) => {
-      console.log("Fetching oproject:");
-      console.dir(oproject);
+
       let visitorIsOwner = false;
-      if (token !== "null") {
-        try {
-          const verified = jwt.verify(token, secret);
-          console.log("JWT verified data:");
-          console.log(verified);
-          let visitor = new ObjectID(verified.userId);
-          if (oproject.userid.equals(visitor)) {
-            visitorIsOwner = true;
-          }
-        } catch (err) {
-          console.log("Bad token: " + err);
-        }
-      }
       const response = {
         project: oproject,
         isOwner: visitorIsOwner,
       };
-      res.json(response); //in the front-end we must access response.data
+      res.json(response);
     })
     .catch((err) => res.status(500).json("Error: " + err));
 };
 
+// LEGACY
 exports.getByUser = function (req, res) {
-  // works well
+  // TODO: refactor for Firebase Auth
   Oproject.find({ userid: mongoose.Types.ObjectId(req.params.userid) })
     .then((projects) => res.json(projects))
     .catch((err) => res.status(500).json("Error" + err));
 };
 
-exports.getMine = function (req, res) {
-  Oproject.find({ userid: mongoose.Types.ObjectId(req.user.userId) })
-    .populate("userid")
-    .then((projects) => res.json(projects))
-    .catch((err) => res.status(500).json("Error" + err));
-};
-// Changed status errors to 500 'Internal Server Error'.
+
+/*
+EXAMPLE OPROJECT
+{
+  "title": "Geeb Project",
+  "description": "A long-term independent networking project made with the MERN stack",
+  "highlights": ["No highlights yet"],
+  "tags": ["MERN", "Web App"],
+  "skills": ["Fullstack developer"],
+  "desirables": ["Likes programming!"]
+}
+*/

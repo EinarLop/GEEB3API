@@ -17,7 +17,7 @@ router.get("/by/:userid", oproject.getByUser);
 router.get("/:id", oproject.getOne);
 
 // Update one by Id
-router.patch("/update/:id", oproject.update);
+router.patch("/update/:id", auth, oproject.update);
 
 // Delete a post
 router.post("delete/:id", auth, oproject.delete);
@@ -28,10 +28,6 @@ router.post("delete/:id", auth, oproject.delete);
 // Create one project
 router.post("/create", auth, oproject.create);
 
-// Get my own Oprojects
-router.get("/mine", auth, oproject.getMine);
-
-router.post("/deleteAll", oproject.deleteAll);      // TESTING PURPOSES ONLY
 
 
 module.exports = router;

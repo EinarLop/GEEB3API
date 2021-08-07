@@ -3,14 +3,13 @@ const router = express.Router();
 const sproject = require("../controllers/sprojController");
 const auth = require('../controllers/auth.js');
 
-//   Prefix     '/sprojects'
+/* Prefix     '/sprojects' */
 
-router.post("/create", auth, sproject.create); 
+router.post("/create", auth, sproject.create);
 
-router.patch("/update/:id", sproject.update);
+router.patch("/update/:id", auth, sproject.update);
 
-router.post("/delete/:id", sproject.delete);
-router.post("/deleteall", sproject.deleteAll);
+router.post("/delete/:id", auth, sproject.delete);
 
 router.get("/:id", sproject.getOne);
 

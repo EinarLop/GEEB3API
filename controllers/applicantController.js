@@ -9,13 +9,13 @@ let secret = process.env.TOKENSECRET;
 
 
 exports.create = function (req, res) {
-  // verify that idToken.email matches the applicant's email
+  // verify idToken.email matches the applicant's email
   let userid;
   const oprojectid = req.body.oprojectid;
   const motive = req.body.motive;
 
   var applicant = new Applicant({
-    userid,
+    userid, //?
     oprojectid,
     motive,
   });

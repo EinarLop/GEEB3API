@@ -20,6 +20,7 @@ router.post("/register", user.register);
 router.put("/update/:id", auth, user.update);
 router.get("/delete/:id", auth, user.delete);
 
+router.get("/get-my-id", auth, user.getMongoID);
 
 router.get("/:id", user.getOne);
 
