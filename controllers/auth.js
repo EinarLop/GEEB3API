@@ -1,4 +1,3 @@
-const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const admin = require('../firebase/admin');
 
@@ -10,11 +9,12 @@ module.exports = async function auth(req, res, next) {
   }
 
   try {
+    // Try verifying token
     const idToken = authTokenHeader[1];
-    // Verify client's firebase auth Token
     const decodedToken = await admin.auth().verifyIdToken(idToken);
 
-    res.locals.decodedToken = decodedToken
+    // Store token information
+    res.locals.decodedToken = decodedToken;
 
     console.log("Succesfully Authenticated User:", decodedToken.email);
 
@@ -27,3 +27,10 @@ module.exports = async function auth(req, res, next) {
 
   next();
 }
+
+
+/**
+ * create: sprojects, oprojects, tags
+ * update: sprojects, oprojects, tags, users
+ * delete: sprojects, oprojects, tags, users
+ */

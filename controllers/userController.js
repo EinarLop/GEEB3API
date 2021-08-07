@@ -27,7 +27,6 @@ exports.findByEmail = async function (req, res) {
     res.status(404).json("Requested email was not found");
   }
 
-  console.log("Return:", userDoc)
   res.status(200).json(userDoc);
 }
 
@@ -152,40 +151,18 @@ exports.getEmailFromUsername = async function (req, res) {
     console.log("Something happened:", error);
     res.status(500).json(error);
   }
-
-
 }
 
 
 
-
-
-// LEGACY --- DO **NOT** USE
 exports.getOne = function (req, res) {
-  const token = req.header("auth-token"); // returns string 'null' if not found;
+  console.log("Legacy getOne");
 
   User.findById(req.params.id)
     .then((user) => {
-      let visitorIsOwner = false;
-      if (token !== "null") {
-        try {
-          const verified = jwt.verify(token, SECRET);
-          console.log("JWT verification:");
-          console.log(verified);
-          let visitor = new ObjectID(verified.userId);
-          console.log("visitor:", visitor);
-          console.log("user _id:", user._id);
-          visitorIsOwner = user._id.equals(visitor);
-        } catch (err) {
-          console.log("Bad token: " + err);
-        }
-      }
-      console.log("Backend response for isowner:", visitorIsOwner);
-      const response = {
-        user: user,
-        isOwner: visitorIsOwner,
-      };
-      res.json(response); //in the front-end we must access response.data
+
+      console.log("Fetched user", user.username);
+      res.status(200).json(user); //in the front-end we must access response.data
     })
     .catch((err) => {
       console.log("Something happened:", err);

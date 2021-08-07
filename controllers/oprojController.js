@@ -127,8 +127,8 @@ exports.delete = function (req, res) {
     });
 };
 
-exports.deleteAll = function (req, res) {
-  Oproject.deleteMany({ status: "Open" })
+exports.deleteClosed = function (req, res) {
+  Oproject.deleteMany({ status: "Closed" })
     .then(function () {
       res.send("Data deleted"); // Success
     })
@@ -160,15 +160,6 @@ exports.getByUser = function (req, res) {
     .then((projects) => res.json(projects))
     .catch((err) => res.status(500).json("Error" + err));
 };
-
-exports.getMine = function (req, res) {
-  // TODO: refactor for Firebase Auth
-  Oproject.find({ userid: mongoose.Types.ObjectId(req.user.userId) })
-    .populate("userid")
-    .then((projects) => res.json(projects))
-    .catch((err) => res.status(500).json("Error" + err));
-};
-
 
 
 /*
