@@ -1,19 +1,18 @@
 const Sproject = require("../models/sproject");
 const Tag = require("../models/tag");
 const mongoose = require('mongoose');
-const jwt = require('jsonwebtoken');
-const ObjectID = require('mongoose').mongo.ObjectID;
 require('dotenv').config();
 
 
 // Requires user's mongoID in client request
 exports.create = async function (req, res) {
   console.log("Creating a project...");
-  const title = req.body.title;
+  const { title, description, links, imageurls, tags } = req.body;
+  /* const title = req.body.title;
   const description = req.body.description;
   const links = req.body.links;
   const imageurls = req.body.imageurls;
-  const tags = req.body.tags;
+  const tags = req.body.tags; */
   const userid = mongoose.Types.ObjectId(req.body.userid);
 
   // All tags to lowercase
@@ -27,6 +26,9 @@ exports.create = async function (req, res) {
     imageurls,
     tags,
   });
+
+  console.log("New sproject:");
+  console.dir(sproject);
 
   sproject
     .save()

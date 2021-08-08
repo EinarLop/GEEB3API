@@ -158,9 +158,14 @@ exports.getMongoID = async function (req, res) {
   console.log("Get Mondo ID from user:", email);
 
   try {
-    const id = await User.findOne({ email: email }, '_id');
-    console.log("Resulting mongoID", id);
-    res.status(200).send(id);
+    const doc = await User.findOne({ email: email }, '_id');
+    console.log("Resulting mongoID", doc);
+
+    if (!doc) {
+      res.status(404).json(`MongoID for ${email} was not found`);
+    }
+
+    res.status(200).send(doc);
 
   } catch (error) {
     console.error("Error fetching MongoID", error);
