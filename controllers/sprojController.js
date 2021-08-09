@@ -1,5 +1,6 @@
 const Sproject = require("../models/sproject");
 const Tag = require("../models/tag");
+const User = require("../models/user");
 const mongoose = require('mongoose');
 require('dotenv').config();
 
@@ -8,15 +9,27 @@ require('dotenv').config();
 exports.create = async function (req, res) {
   console.log("Creating a project...");
   const { title, description, links, imageurls, tags } = req.body;
-  /* const title = req.body.title;
-  const description = req.body.description;
-  const links = req.body.links;
-  const imageurls = req.body.imageurls;
-  const tags = req.body.tags; */
-  const userid = mongoose.Types.ObjectId(req.body.userid);
+  let lowercasetags = tags.map(t => t.toLowerCase());
 
-  // All tags to lowercase
-  tags = tags.map(t => t.toLowerCase());
+  const { email } = res.locals.decodedToken;
+  let userid;
+
+  try {
+
+    const userDoc = await User.findOne({ email: email }, '_id');
+    userid = mongoose.Types.ObjectId(userDoc['_id']);
+
+    if (!userid) {
+      console.log("No corresponding MongoID was found for", email);
+      res.status(404).json(error);
+    }
+
+  } catch (error) {
+
+    console.error(error);
+    res.status(500).json(error);
+
+  }
 
   var sproject = new Sproject({
     title,
@@ -24,7 +37,7 @@ exports.create = async function (req, res) {
     userid,
     links,
     imageurls,
-    tags,
+    tags: lowercasetags,
   });
 
   console.log("New sproject:");
