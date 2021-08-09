@@ -6,26 +6,46 @@ const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
-// Requires user's mongoID in client request
-exports.create = function (req, res) {
-  // TODO: refactor for firebase auth
-  console.log(req.user); // req.user set in auth middleware
+
+exports.create = async function (req, res) {
+
+  console.log("Creating an oproject...");
   const title = req.body.title;
   const description = req.body.description;
-  const userid = mongoose.Types.ObjectId(req.user.userId);
   const status = req.body.status;
   const highlights = req.body.highlights;
   const desirables = req.body.desirables;
   const tags = req.body.tags;
   const skills = req.body.skills;
 
-  // All tags to lowercase
-  tags = tags.map(t => t.toLowerCase());
+  let lowercasetags = tags.map(t => t.toLowerCase());
+
+  const { email } = res.locals.decodedToken;
+  let userid;
+
+  try {
+
+    const userDoc = await User.findOne({ email: email }, '_id');
+    if (!userDoc) {
+      console.log("No corresponding MongoID was found for", email);
+      res.status(404).json(error);
+    }
+
+    userid = mongoose.Types.ObjectId(userDoc['_id']);
+
+
+
+  } catch (error) {
+
+    console.error(error);
+    res.status(500).json(error);
+
+  }
 
   var oproject = new Oproject({
     title,
     description,
-    userid, // User's ObjectID
+    userid,
     status,
     highlights,
     tags,
@@ -33,7 +53,8 @@ exports.create = function (req, res) {
     desirables,
   });
 
-  console.log("New Project: \n" + oproject);
+  console.log("New Project");
+  console.dir(oproject);
 
   oproject.save().then((newDoc) => {
     // For every Skill & Tag, if not existing create new, else add the projectId reference.
@@ -153,11 +174,25 @@ exports.getOne = function (req, res) {
     .catch((err) => res.status(500).json("Error: " + err));
 };
 
-// LEGACY
-exports.getByUser = function (req, res) {
-  // TODO: refactor for Firebase Auth
-  Oproject.find({ userid: mongoose.Types.ObjectId(req.params.userid) })
-    .then((projects) => res.json(projects))
+// UNUSED 
+exports.getByUser = async function (req, res) {
+  const { username } = req.params;
+  let userid;
+
+  try {
+    const userDoc = await User.findOne({ username: username }, '_id');
+    if (!userDoc) {
+      res.status(404).json("No MongoId found for username", username);
+    }
+    userid = mongoose.Types.ObjectId(userDoc['_id']);;
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json(error);
+  }
+
+  Oproject.find({ userid: userid })
+    .then((projects) => res.status(200).json(projects))
     .catch((err) => res.status(500).json("Error" + err));
 };
 
@@ -170,6 +205,6 @@ EXAMPLE OPROJECT
   "highlights": ["No highlights yet"],
   "tags": ["MERN", "Web App"],
   "skills": ["Fullstack developer"],
-  "desirables": ["Likes programming!"]
+  "desirables": ["Likes programming!", "Is in the last semesters"]
 }
 */
