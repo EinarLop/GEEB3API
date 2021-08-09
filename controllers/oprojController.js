@@ -149,10 +149,11 @@ exports.deleteAll = function (req, res) {
 
 exports.getOne = function (req, res) {
   const token = req.header("auth-token");
-  Oproject.findById(req.params.id).populate('userid')
+  Oproject.findById(req.params.id)
+    .populate("userid")
     .then((oproject) => {
       console.log("Fetching oproject:");
-      console.dir(oproject);
+      // console.dir(oproject);
       let visitorIsOwner = false;
       if (token !== "null") {
         try {
