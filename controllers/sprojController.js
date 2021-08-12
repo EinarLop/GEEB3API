@@ -5,11 +5,10 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 
 
-// Requires user's mongoID in client request
 exports.create = async function (req, res) {
-  console.log("Creating a project...");
+  console.log("Creating an Sproject...");
   const { title, description, links, imageurls, tags } = req.body;
-  let lowercasetags = tags.map(t => t.toLowerCase());
+  let lowercasetags = tags.map(t => t.toLowerCase().trim());
 
   const { email } = res.locals.decodedToken;
   let userid;
@@ -41,20 +40,30 @@ exports.create = async function (req, res) {
   });
 
   console.log("New sproject:");
-  console.dir(sproject);
+  console.log(sproject);
 
   sproject
     .save()
     .then(async (newDoc) => {
       const sprojects = [newDoc._id];
 
+      // For every tag name of S Project
       for (let i = 0; i < newDoc.tags.length; i++) {
-        // for each tag name of S Project
+        // Check if tag name exists
         const tagName = newDoc.tags[i];
-        let tag = await Tag.findOne({ name: tagName });
+        let tag;
 
+        try {
+          tag = await Tag.findOne({ name: tagName });
+
+        } catch (error) {
+          console.error("Error finding tagname:", error)
+          throw err;
+        }
+
+        // If no tag found, create a new tag
         if (!tag) {
-          // Create new Tag
+
           tag = new Tag({
             name: tagName,
             sprojects,
@@ -68,8 +77,9 @@ exports.create = async function (req, res) {
             .catch((err) => {
               console.log("Error saving new tag:" + err);
             });
+
         } else {
-          // Update if existing
+          // Update sproject list to existing tag
           console.log(tag);
           console.log("New doc id:" + newDoc._id);
           tag.sprojects.push(newDoc._id);
@@ -84,18 +94,20 @@ exports.create = async function (req, res) {
             });
         }
         // save new tags and  update existing ones
-        res.status(201).json("The s project was created succesfully with tags");
       }
+      console.log("Sproject saved succesfully with tags: ", tags);
+      res.status(201).json(newDoc);
+
     })
     .catch((err) =>
-      res.status(500).json("Couldn't save new S project: " + err)
+      res.status(500).json("Error saving Sproject: " + err)
     );
 };
 
 exports.getAll = function (req, res) {
   console.log("Fetch all sprojects");
-  Sproject.find().populate('userid')
-    .then((projects) => res.json(projects))
+  Sproject.find().populate('userid').sort({ created: 'desc' })
+    .then((projects) => res.status(200).json(projects))
     .catch((err) => res.status(500).json("Error: " + err));
 };
 
@@ -103,7 +115,7 @@ exports.getAll = function (req, res) {
 exports.getOne = function (req, res) {
   Sproject.findById(req.params.id).populate('userid')
     .then((sproject) => {
-      res.json(sproject);
+      res.status(200).json(sproject);
     })
     .catch((err) => res.status(500).json("Error: " + err));
 };
