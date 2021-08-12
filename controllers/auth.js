@@ -19,8 +19,8 @@ module.exports = async function auth(req, res, next) {
 
   } catch (error) {
 
-    console.error("Error while verifying:", error);
-    res.status(401).json("Authentication Failed:", error);
+    console.error("Authentication Failed:", error);
+    res.status(401).json(error);
 
   }
 

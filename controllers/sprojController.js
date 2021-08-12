@@ -16,17 +16,19 @@ exports.create = async function (req, res) {
   try {
 
     const userDoc = await User.findOne({ email: email }, '_id');
-    userid = mongoose.Types.ObjectId(userDoc['_id']);
-
-    if (!userid) {
+    if (!userDoc) {
       console.log("No corresponding MongoID was found for", email);
       res.status(404).json(error);
+      return;
     }
+
+    userid = mongoose.Types.ObjectId(userDoc['_id']);
 
   } catch (error) {
 
     console.error(error);
     res.status(500).json(error);
+    return;
 
   }
 
@@ -131,7 +133,7 @@ exports.delete = function (req, res) {
 };
 
 exports.update = function (req, res) {
-  res.send("Updating a project..." + req.params.id);
+  res.status(501).send("OProject update not implemented yet")
 };
 
 exports.setImages = function (req, res) {

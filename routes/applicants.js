@@ -12,7 +12,7 @@ router.get('/', applicant.getAll);    // testing
 
 router.get('/:userid', applicant.getByUser);      // view my applications; requires auth of user
 
-router.get('/project/:oprojectid', applicant.getByProject); //view appliactions of a project
+router.get('/project/:oprojectid', applicant.getByProject); //view applications to an oproject
 
 router.post('/create', applicant.create);      // Create Applicant object
 

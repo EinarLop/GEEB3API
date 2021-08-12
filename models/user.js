@@ -53,7 +53,6 @@ function validEmail(email) {
 function arrLimit(arr) {
   return arr.length <= 8;   // arbitrary num; decide later
 }
-// alternativelt use 'match' option for validation [regex, message]
 
 userSchema.virtual("url").get(() => {
   return "/people/user/" + this._id;

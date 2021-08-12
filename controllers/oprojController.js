@@ -1,24 +1,32 @@
 const Oproject = require("../models/oproject");
 const Tag = require("../models/tag");
 const Skill = require("../models/skill");
+const User = require("../models/user");
 const async = require("async");
 const mongoose = require("mongoose");
-const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 
 exports.create = async function (req, res) {
 
   console.log("Creating an oproject...");
-  const title = req.body.title;
+  const {
+    title,
+    description,
+    status,
+    highlights,
+    desirables,
+    tags,
+    skills } = req.body;
+  /* const title = req.body.title;
   const description = req.body.description;
   const status = req.body.status;
   const highlights = req.body.highlights;
   const desirables = req.body.desirables;
   const tags = req.body.tags;
-  const skills = req.body.skills;
+  const skills = req.body.skills; */
 
-  let lowercasetags = tags.map(t => t.toLowerCase());
+  let lowercasetags = tags.map(t => t.toLowerCase().trim());
 
   const { email } = res.locals.decodedToken;
   let userid;
@@ -29,6 +37,7 @@ exports.create = async function (req, res) {
     if (!userDoc) {
       console.log("No corresponding MongoID was found for", email);
       res.status(404).json(error);
+      return;
     }
 
     userid = mongoose.Types.ObjectId(userDoc['_id']);
@@ -39,6 +48,7 @@ exports.create = async function (req, res) {
 
     console.error(error);
     res.status(500).json(error);
+    return;
 
   }
 
@@ -48,81 +58,82 @@ exports.create = async function (req, res) {
     userid,
     status,
     highlights,
-    tags,
     skills,
     desirables,
+    tags: lowercasetags,
   });
 
-  console.log("New Project");
-  console.dir(oproject);
+  console.log("New Oproject");
+  console.log(oproject);
 
-  oproject.save().then((newDoc) => {
-    // For every Skill & Tag, if not existing create new, else add the projectId reference.
+  oproject
+    .save()
+    .then((newDoc) => {
 
-    async.parallel(
-      // save Skills and Tags to database in parallelized fashion
-      {
-        tags: async function (callback) {
-          const oprojects = [newDoc._id];
-          for (let i = 0; i < newDoc.tags.length; i++) {
-            // iterate over the project's tags array
-            const tagName = newDoc.tags[i];
-            let tag = await Tag.findOne({ name: tagName });
-            if (!tag) {
-              tag = new Tag({
-                name: tagName,
-                oprojects,
-              });
+      // For every Skill & Tag, if not existing create new, else add the projectId reference.
+      async.parallel(
+        // save Skills and Tags to database in parallelized fashion
+        {
+          tags: async function (callback) {
+            const oprojects = [newDoc._id];
+            for (let i = 0; i < newDoc.tags.length; i++) {
+              // iterate over the project's tags array
+              const tagName = newDoc.tags[i];
+              let tag = await Tag.findOne({ name: tagName });
+              if (!tag) {
+                tag = new Tag({
+                  name: tagName,
+                  oprojects,
+                });
 
-              tag.save(callback);
-            } else {
-              // update Mongoose tags oprojects
-              console.log(tag);
-              console.log("New doc id:" + newDoc._id);
-              tag.oprojects.push(newDoc._id);
-              tag.save(callback);
+                tag.save(callback);
+              } else {
+                // update Mongoose tags oprojects
+                console.log(tag);
+                console.log("New doc id:" + newDoc._id);
+                tag.oprojects.push(newDoc._id);
+                tag.save(callback);
+              }
+              // save new tags and  update existing ones
             }
-            // save new tags and  update existing ones
-          }
-        },
+          },
 
-        skills: async function (callback) {
-          // save new skills and update existing ones.
-          const oprojects = [newDoc._id];
-          for (let i = 0; i < newDoc.skills.length; i++) {
-            // iterate over the project's skills array
-            const skillName = newDoc.skills[i];
-            let skill = await Skill.findOne({ name: skillName });
-            if (!skill) {
-              skill = new Skill({
-                name: skillName,
-                oprojects,
-              });
+          skills: async function (callback) {
+            // save new skills and update existing ones.
+            const oprojects = [newDoc._id];
+            for (let i = 0; i < newDoc.skills.length; i++) {
+              // iterate over the project's skills array
+              const skillName = newDoc.skills[i];
+              let skill = await Skill.findOne({ name: skillName });
+              if (!skill) {
+                skill = new Skill({
+                  name: skillName,
+                  oprojects,
+                });
 
-              skill.save(callback);
-            } else {
-              // update Mongoose skill's oprojects
-              console.log(skill);
-              console.log("New doc id:" + newDoc._id);
-              skill.oprojects.push(newDoc._id);
-              skill.save(callback);
+                skill.save(callback);
+              } else {
+                // update Mongoose skill's oprojects
+                console.log(skill);
+                console.log("New doc id:" + newDoc._id);
+                skill.oprojects.push(newDoc._id);
+                skill.save(callback);
+              }
+              // save new tags and  update existing ones
             }
-            // save new tags and  update existing ones
-          }
+          },
         },
-      },
-      function (err, results) {
-        console.log("Callback running");
-        // objeto con atributos tags, skills, que incluyen los resultados
-        if (err) {
-          res.status(500).json("Error" + err);
+        function (err, results) {
+          if (err) {
+            res.status(500).json("Error" + err);
+          }
+          console.log("Saved Oproject succesfully, results:", results);
+
+          console.log("New doc's id:", newDoc._id);
+          res.status(200).json(newDoc);
         }
-        console.log("Callback finished succesfully");
-        console.log("New doc's id:", newDoc._id);
-        res.json(newDoc._id);
-      }
-    );
-  });
+      );
+    });
 };
 
 exports.getAll = function (req, res) {
@@ -133,7 +144,7 @@ exports.getAll = function (req, res) {
 };
 
 exports.update = function (req, res) {
-  res.send("Updating a project..." + req.params.id);
+  res.status(501).send("OProject update not implemented yet")
 };
 
 exports.delete = function (req, res) {
@@ -161,6 +172,7 @@ exports.deleteClosed = function (req, res) {
 
 exports.getOne = function (req, res) {
   console.log("Get One Oproject!");
+  console.log("Querying project id", req.params.id);
   Oproject.findById(req.params.id).populate('userid')
     .then((oproject) => {
 

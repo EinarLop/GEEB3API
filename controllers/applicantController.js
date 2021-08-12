@@ -94,6 +94,8 @@ exports.getByUser = function (req, res) {      // works well
 }
 
 exports.getByProject = function (req, res) {      // works well
+  console.log("getByProject...");
+  console.log("Querying oproject", req.params.oprojectid);
   Applicant.find({ oprojectid: mongoose.Types.ObjectId(req.params.oprojectid) })
     .populate('userid')
     .then(applications => res.json(applications))
