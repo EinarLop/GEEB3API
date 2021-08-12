@@ -1,10 +1,9 @@
 const bcrypt = require("bcrypt");
-const { response } = require("express");
+const mongoose = require('mongoose');
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 require("dotenv").config();
 const SECRET = process.env.TOKENSECRET;
-const ObjectID = require("mongoose").mongo.ObjectID;
 
 
 exports.getAll = async function (req, res) {
@@ -44,28 +43,35 @@ exports.findByUsername = async function (req, res) {
 
 exports.update = async function (req, res) {
   // verify that idToken.email equals requested email
-  const authEmail = res.locals.decodedToken.email;
-  const userEmail = req.params.id;
 
-  if (authEmail !== userEmail) {
-    res.status(401).json(`User ${authEmail} does not have authorization to update ${userEmail}`)
-  }
+  const userid = mongoose.Types.ObjectId(req.params.id);
+  console.log("Finding userid", userid);
 
-  const userDoc = null;
+  let userDoc;
 
   try {
-    userDoc = await User.findOne({ email: userEmail });
+    userDoc = await User.findById(userid);
 
   } catch (error) {
-    res.status(404).json("Error finding user", userEmail);
+    console.log("Error finding user");
+    res.status(500).json(error);
+    return;
   }
 
   if (userDoc) {
 
-    const { fullname, email, bio, college, major, semester, links, mastered, learning, want } = req.body;
+    const authEmail = res.locals.decodedToken.email;
 
-    userDoc.fullname = fullname;
-    userDoc.email = email;
+    if (authEmail != userDoc.email) {
+      console.log("Emails don't match:", authEmail, userDoc.email);
+      res.status(401).json("Unauthorized update request");
+      return;
+    }
+
+    const { name, lastname, email, bio, college, major, semester, links, mastered, learning, want } = req.body;
+
+    userDoc.name = name;
+    userDoc.lastname = lastname;
     userDoc.bio = bio;
     userDoc.college = college;
     userDoc.major = major;
@@ -74,6 +80,10 @@ exports.update = async function (req, res) {
     userDoc.mastered = mastered;
     userDoc.learning = learning;
     userDoc.want = want;
+
+    if (userDoc.email != email) {
+      console.log("Email updates are not implemented yet");
+    }
 
     try {
       const updatedDoc = await userDoc.save();

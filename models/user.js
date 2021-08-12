@@ -32,8 +32,9 @@ const userSchema = new Schema({
       "UAM",
       "UDLAP",
       "LA SALLE",
+      ""
     ],
-    default: "ITESM",
+    default: "",
   },
   semester: Number,
   major: String,
