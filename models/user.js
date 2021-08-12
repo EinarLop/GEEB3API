@@ -18,7 +18,8 @@ const userSchema = new Schema({
     required: true,
     validate: [validEmail, "Not a valid email"],
   },
-  fullname: { type: String, maxlength: 40, default: "" },
+  name: { type: String, maxlength: 15, default: "" },
+  lastname: { type: String, maxlength: 25, default: "" },
   college: {
     type: String,
     enum: [

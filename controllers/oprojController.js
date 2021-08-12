@@ -127,7 +127,7 @@ exports.create = async function (req, res) {
 
 exports.getAll = function (req, res) {
   Oproject.find()
-    .populate("userid")
+    .populate("userid").sort({ created: 'desc' })
     .then((projects) => res.json(projects))
     .catch((err) => res.status(500).json("Error: " + err));
 };
